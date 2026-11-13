@@ -18,6 +18,7 @@ ENV/
 !.env.example
 
 # vue/node.js
+.vscode/
 node_modules/
 dist/
 .vite/
