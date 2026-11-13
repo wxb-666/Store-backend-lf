@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
-    <!-- 左侧导航栏 -->
-    <Sidebar />
+    <!-- 传入折叠状态 -->
+    <Sidebar v-model:collapsed="isCollapsed" />
 
-    <!-- 右侧主内容区 -->
-    <main class="main-content">
+    <!-- 右侧主内容区 (动态绑定样式，收起时圆角依然完美) -->
+    <main class="main-content" :class="{ 'collapsed-margin': isCollapsed }">
       <!-- 顶部状态栏 -->
       <header class="top-header">
         <div class="status">
@@ -41,9 +41,8 @@
           </div>
         </section>
 
-        <!-- 底部卡片网格区域 -->
+        <!-- 底部卡片网格区域 (保持不变) -->
         <section class="task-grid">
-          <!-- 卡片 1 -->
           <div class="task-card">
             <div class="card-img-placeholder gray-placeholder"></div>
             <h3>设置支付</h3>
@@ -51,7 +50,6 @@
             <button class="outline-btn">激活支付</button>
           </div>
 
-          <!-- 卡片 2 -->
           <div class="task-card">
             <div class="card-img-placeholder domain-card">
               <span class="domain-text">helpharbor.store</span>
@@ -61,23 +59,19 @@
             <button class="outline-btn">选择域名</button>
           </div>
 
-          <!-- 卡片 3 (彩色背景) -->
           <div class="task-card highlight-card">
             <div class="highlight-top">
               <div class="card-progress">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
                 已完成 8 项任务中的 4 项
               </div>
-              <div class="illustration-box">
-                <!-- 绿色斜线纹路 -->
-              </div>
+              <div class="illustration-box"></div>
             </div>
             <h3>B2B 与 DTC，一站搞定</h3>
             <p>下一个任务：B2B 与 DTC，一站搞定</p>
             <button class="outline-btn">继续</button>
           </div>
 
-          <!-- 卡片 4 (任务列表) -->
           <div class="task-card list-card">
             <div class="list-progress">○ 已完成 3 项任务中的 0 项</div>
             <h3>小改动，大提升。</h3>
@@ -96,18 +90,23 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import Sidebar from './components/Sidebar.vue'
+
+// 控制侧边栏折叠状态
+const isCollapsed = ref(false)
 </script>
 
 <style scoped>
-/* 全局外层（黑色背景露出） */
+/* 全局外层 */
 .app-container {
   display: flex;
   height: 100vh;
   width: 100vw;
-  background-color: #1a1a1a; /* 和侧边栏同色 */
+  background-color: #1a1a1a;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 /* 右侧白色主内容区 */
@@ -117,8 +116,13 @@ import Sidebar from './components/Sidebar.vue'
   flex-direction: column;
   background-color: #ffffff;
   border-radius: 16px;
-  margin: 8px 8px 8px 0; /* 留出边距露出黑底 */
+  margin: 8px 8px 8px 0;
   overflow: hidden;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.main-content.collapsed-margin {
+  margin-left: 0; /* 当侧边栏收起时，贴紧左侧，圆角依然会被黑色背景承托 */
 }
 
 /* 顶部状态栏 */
@@ -151,7 +155,6 @@ import Sidebar from './components/Sidebar.vue'
   font-size: 13px;
 }
 
-/* 顶部发布按钮 */
 .publish-btn {
   position: absolute;
   left: 50%;
@@ -174,10 +177,8 @@ import Sidebar from './components/Sidebar.vue'
   flex: 1;
   overflow-y: auto;
   padding: 40px;
-  background-color: #ffffff;
 }
 
-/* 欢迎区域 */
 .welcome-section {
   display: flex;
   flex-direction: column;
@@ -195,7 +196,6 @@ import Sidebar from './components/Sidebar.vue'
   font-weight: 700;
 }
 
-/* AI 输入框 */
 .ai-input-box {
   width: 100%;
   max-width: 680px;
@@ -258,13 +258,6 @@ import Sidebar from './components/Sidebar.vue'
   background: #e4e4e7;
 }
 
-.action-icon {
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-}
-
-/* 卡片网格布局 */
 .task-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -308,14 +301,10 @@ import Sidebar from './components/Sidebar.vue'
   cursor: pointer;
   font-weight: 500;
   color: #333;
-  transition: all 0.2s;
 }
 
-.outline-btn:hover {
-  background: #f4f4f5;
-}
+.outline-btn:hover { background: #f4f4f5; }
 
-/* 卡片占位图和特殊样式 */
 .card-img-placeholder {
   height: 120px;
   border-radius: 8px;
@@ -338,17 +327,12 @@ import Sidebar from './components/Sidebar.vue'
   color: #3b82f6;
 }
 
-/* 浅绿卡片 */
 .highlight-card {
   background: #ecfdf5;
   border-color: #d1fae5;
 }
 
-.highlight-top {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
+.highlight-top { display: flex; flex-direction: column; gap: 12px; }
 
 .card-progress {
   display: flex;
@@ -361,41 +345,11 @@ import Sidebar from './components/Sidebar.vue'
 .illustration-box {
   height: 100px;
   border-radius: 8px;
-  background: repeating-linear-gradient(
-    -45deg,
-    #a7f3d0,
-    #a7f3d0 8px,
-    transparent 8px,
-    transparent 16px
-  );
+  background: repeating-linear-gradient(-45deg, #a7f3d0, #a7f3d0 8px, transparent 8px, transparent 16px);
 }
 
-/* 任务列表卡片 */
-.list-progress {
-  font-size: 12px;
-  color: #71717a;
-  margin-bottom: 12px;
-}
-
-.checklist {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 16px 0;
-}
-
-.checklist li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  margin-bottom: 12px;
-  color: #52525b;
-}
-
-.circle {
-  width: 14px;
-  height: 14px;
-  border: 1.5px solid #d4d4d8;
-  border-radius: 50%;
-}
+.list-progress { font-size: 12px; color: #71717a; margin-bottom: 12px; }
+.checklist { list-style: none; padding: 0; margin: 0 0 16px 0; }
+.checklist li { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 12px; color: #52525b; }
+.circle { width: 14px; height: 14px; border: 1.5px solid #d4d4d8; border-radius: 50%; }
 </style>
