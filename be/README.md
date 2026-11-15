@@ -1,7 +1,7 @@
 # 后端服务设计
 
-本目录用于存放店铺后台的 Python 后端服务。采用 FastAPI、SQLAlchemy 和 PostgreSQL：  
-FastAPI 负责 HTTP API，SQLAlchemy 负责数据库访问，PostgreSQL 用于保存订单、商品和客户等业务数据。
+本目录用于存放店铺后台的 Python 后端服务。采用 FastAPI、SQLAlchemy 和 MySQL：  
+FastAPI 负责 HTTP API，SQLAlchemy 负责数据库访问，MySQL 用于保存订单、商品和客户等业务数据。
 
 ## 后端结构
 
@@ -62,5 +62,5 @@ FastAPI 负责 HTTP API，SQLAlchemy 负责数据库访问，PostgreSQL 用于�
 
 ## 容器化建议
 
-后端服务、PostgreSQL 和图片对象存储建议在 docker-compose.yml 中作为独立服务运行。  
+后端服务、MySQL 和图片对象存储建议在 docker-compose.yml 中作为独立服务运行。  
 数据库应挂载命名卷，保证容器重建后订单数据仍能保留；后端通过 Compose 服务名连接数据库。
