@@ -28,5 +28,24 @@ services:
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped
 
+  database:
+    image: mysql:8.0
+    container_name: Store-backend-mysql
+    restart: unless-stopped
+    # 数据库连接信息从 .env 文件里面获取
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-store_db}
+      MYSQL_USER: ${MYSQL_USER:-store_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-store_password}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u$${MYSQL_USER} -p$${MYSQL_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
 volumes:
   frontend_node_modules:
+  mysql_data:
