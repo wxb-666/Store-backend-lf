@@ -1,17 +1,18 @@
 <template>
   <section class="nav-group">
-    <p v-if="title && !collapsed" class="nav-group__title">{{ title }}</p>
-    <div v-else-if="title" class="nav-group__divider" />
-    <button v-for="item in items" :key="item.label" class="nav-item" :class="{ 'is-active': item.label === activeItem, 'is-icon-only': collapsed }" :title="collapsed ? item.label : undefined" type="button" @click="emit('select', item.label)">
+    <p v-if="titleKey && !collapsed" class="nav-group__title">{{ t(titleKey) }}</p>
+    <div v-else-if="titleKey" class="nav-group__divider" />
+    <button v-for="item in items" :key="item.id" class="nav-item" :class="{ 'is-active': item.id === activeItem, 'is-icon-only': collapsed }" :title="collapsed ? t(item.labelKey) : undefined" type="button" @click="emit('select', item.id)">
       <AppIcon :name="item.icon" />
-      <span v-if="!collapsed">{{ item.label }}</span>
+      <span v-if="!collapsed">{{ t(item.labelKey) }}</span>
     </button>
   </section>
 </template>
 
 <script setup lang="ts">
 import AppIcon, { type IconName } from '../ui/AppIcon.vue'
-type NavigationItem = { label: string; icon: IconName }
-defineProps<{ title?: string; items: NavigationItem[]; collapsed: boolean; activeItem: string }>()
+import { t, type MessageKey } from '../../stores/locale'
+type NavigationItem = { id: string; labelKey: MessageKey; icon: IconName }
+defineProps<{ titleKey?: MessageKey; items: NavigationItem[]; collapsed: boolean; activeItem: string }>()
 const emit = defineEmits<{ select: [label: string] }>()
 </script>

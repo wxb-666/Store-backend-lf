@@ -1,9 +1,9 @@
 <template>
   <section class="welcome-panel">
-    <h1><span>support</span> 已初具规模<br />接下来想做什么？</h1>
+    <h1><span>support</span> {{ t('dashboard.welcome') }}<br />{{ t('dashboard.nextStep') }}</h1>
     <form class="assistant-input" @submit.prevent="submitQuestion">
-      <input v-model="question" aria-label="询问 Sidekick" placeholder="商店是否已上线？" />
-      <div class="assistant-input__actions"><span class="sidekick-avatar">◉</span><button class="history-button" type="button"><AppIcon name="history" :size="18" />最近记录</button><span class="action-divider" /><button type="button" aria-label="添加内容"><AppIcon name="plus" :size="20" /></button><button type="submit" aria-label="语音输入"><AppIcon name="mic" :size="20" /></button></div>
+      <input v-model="question" :aria-label="t('dashboard.askSidekick')" :placeholder="t('dashboard.askPlaceholder')" />
+      <div class="assistant-input__actions"><span class="sidekick-avatar">◉</span><button class="history-button" type="button"><AppIcon name="history" :size="18" />{{ t('dashboard.recentHistory') }}</button><span class="action-divider" /><button type="button" :aria-label="t('dashboard.addContent')"><AppIcon name="plus" :size="20" /></button><button type="submit" :aria-label="t('dashboard.voiceInput')"><AppIcon name="mic" :size="20" /></button></div>
     </form>
   </section>
 </template>
@@ -11,6 +11,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import AppIcon from '../ui/AppIcon.vue'
+import { t } from '../../stores/locale'
 const question = ref('')
 const submitQuestion = () => { question.value = '' }
 </script>
