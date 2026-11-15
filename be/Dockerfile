@@ -1,4 +1,4 @@
-# 后端开发镜像。后续接入 API 后，可在此安装依赖并替换启动命令。
+# FastAPI 后端开发镜像。
 FROM python:3.12-slim
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -6,9 +6,13 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
 
 WORKDIR /app
 
+# 先安装依赖，以便在业务代码变更时复用 Docker 构建缓存。
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
 COPY . ./
 
 EXPOSE 8000
 
-# 当前后端尚未实现 API，保留容器运行环境以便后续开发。
-CMD ["python", "-c", "import time; time.sleep(10**9)"]
+# 默认命令便于单独运行镜像；开发环境由 docker-compose.yml 的 command 启用热重载。
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

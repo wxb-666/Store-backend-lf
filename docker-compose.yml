@@ -14,7 +14,7 @@ services:
       - "5173:5173"
     restart: unless-stopped
 
-  # 后端开发运行环境：API 实现后在 be/Dockerfile 中补充依赖与启动命令。
+  # 后端开发服务：通过 Uvicorn 运行 FastAPI，并在代码变更后自动重载。
   backend:
     build:
       context: ./be
@@ -25,6 +25,7 @@ services:
       - ./be:/app
     ports:
       - "8000:8000"
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     restart: unless-stopped
 
 volumes:
