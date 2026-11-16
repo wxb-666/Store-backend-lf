@@ -10,8 +10,6 @@
       <SidebarGroup class="order-entry" :items="orderEntry" :collapsed="collapsed" :active-item="activeItem" @select="handleSelect" />
       <SidebarGroup v-if="activeItem === 'orders'" class="order-links" :items="orderNavigation" :collapsed="collapsed" :active-item="activeOrderItem" @select="handleOrderSelect" />
       <SidebarGroup class="after-order-navigation" :items="afterOrderNavigation" :collapsed="collapsed" :active-item="activeItem" @select="handleSelect" />
-      <SidebarGroup title-key="nav.salesChannels" :items="salesChannels" :collapsed="collapsed" :active-item="activeItem" @select="activeItem = $event" />
-      <SidebarGroup title-key="nav.apps" :items="apps" :collapsed="collapsed" :active-item="activeItem" @select="activeItem = $event" />
     </nav>
     <div class="sidebar__footer">
       <div class="settings-control"><button class="nav-item" :class="{ 'is-icon-only': collapsed }" type="button" :title="t('settings.title')" @click="showLanguageSwitcher = !showLanguageSwitcher"><AppIcon name="settings" /><span v-if="!collapsed">{{ t('settings.title') }}</span></button><LanguageSwitcher :visible="showLanguageSwitcher" /></div>
@@ -28,30 +26,30 @@ import SidebarGroup from './SidebarGroup.vue'
 import { t, type MessageKey } from '../../stores/locale'
 const collapsed = defineModel<boolean>('collapsed', { required: true })
 const activeItem = ref('home')
-const activeOrderItem = ref('')
+const activeOrderItem = ref('all-orders')
 const showLanguageSwitcher = ref(false)
 type NavigationItem = { id: string; labelKey: MessageKey; icon: IconName }
 const topNavigation: NavigationItem[] = [{ id: 'home', labelKey: 'nav.home', icon: 'home' }]
 const orderEntry: NavigationItem[] = [{ id: 'orders', labelKey: 'nav.orders', icon: 'orders' }]
-const afterOrderNavigation: NavigationItem[] = [{ id: 'products', labelKey: 'nav.products', icon: 'tag' }, { id: 'customers', labelKey: 'nav.customers', icon: 'customers' }, { id: 'growth', labelKey: 'nav.growth', icon: 'growth' }, { id: 'discounts', labelKey: 'nav.discounts', icon: 'tag' }, { id: 'content', labelKey: 'nav.content', icon: 'content' }, { id: 'markets', labelKey: 'nav.markets', icon: 'market' }, { id: 'finance', labelKey: 'nav.finance', icon: 'finance' }, { id: 'analytics', labelKey: 'nav.analytics', icon: 'analytics' }]
-const salesChannels: NavigationItem[] = [{ id: 'online-store', labelKey: 'nav.onlineStore', icon: 'store' }, { id: 'agent', labelKey: 'nav.agent', icon: 'bot' }]
-const apps: NavigationItem[] = [{ id: 'add', labelKey: 'nav.add', icon: 'plus' }]
-const orderNavigation: NavigationItem[] = [{ id: 'successful-orders', labelKey: 'nav.successOrders', icon: 'orders' }, { id: 'abandoned-orders', labelKey: 'nav.abandonedOrders', icon: 'orders' }, { id: 'risk-orders', labelKey: 'nav.riskOrders', icon: 'orders' }]
+const orderNavigation: NavigationItem[] = [
+  { id: 'all-orders', labelKey: 'nav.allOrders', icon: 'orders' },
+  { id: 'abandoned-orders', labelKey: 'nav.abandonedOrders', icon: 'orders' },
+  { id: 'risk-orders', labelKey: 'nav.riskOrders', icon: 'orders' },
+]
+const afterOrderNavigation: NavigationItem[] = [{ id: 'products', labelKey: 'nav.products', icon: 'tag' }]
 
 const emit = defineEmits<{ navigate: [view: 'dashboard' | 'orders'] }>()
 const handleSelect = (label: string) => {
   activeItem.value = label
   if (label === 'home') emit('navigate', 'dashboard')
   if (label === 'orders') {
-    activeOrderItem.value = 'successful-orders'
+    activeOrderItem.value = 'all-orders'
     emit('navigate', 'orders')
   }
 }
 const handleOrderSelect = (label: string) => {
-  if (label === 'successful-orders') {
-    activeOrderItem.value = label
-    emit('navigate', 'orders')
-  }
+  activeOrderItem.value = label
+  if (label === 'all-orders') emit('navigate', 'orders')
 }
 </script>
 
@@ -61,7 +59,7 @@ const handleOrderSelect = (label: string) => {
 .search-trigger { display: flex; align-items: center; width: 100%; height: 36px; gap: 9px; padding: 0 11px; margin-bottom: 18px; color: #bebebe; text-align: left; background: #303030; border: 0; border-radius: 12px; }.search-trigger span { flex: 1; font-size: 14px; }.search-trigger kbd { color: #bbb; font: inherit; font-size: 13px; }.is-collapsed .search-trigger { justify-content: center; padding: 0; background: transparent; }.is-collapsed .search-trigger:hover { background: #292929; }
 .sidebar__navigation { flex: 1; min-height: 0; overflow-y: auto; scrollbar-width: none; }.sidebar__navigation::-webkit-scrollbar { display: none; }.sidebar__navigation :deep(.nav-group + .nav-group) { margin-top: 18px; }.sidebar__navigation :deep(.nav-group__title) { padding: 5px 7px 10px; margin: 0; color: #999; font-size: 13px; }.sidebar__navigation :deep(.nav-group__title::after) { margin-left: 5px; content: '›'; }.sidebar__navigation :deep(.nav-group__divider) { height: 1px; margin: 13px 7px; background: #2b2b2b; }
 .sidebar__navigation :deep(.nav-item), .nav-item { display: flex; align-items: center; width: 100%; gap: 11px; min-height: 38px; padding: 0 9px; color: #bebebe; font-size: 15px; text-align: left; background: transparent; border: 0; border-radius: 12px; }.sidebar__navigation :deep(.nav-item:hover), .nav-item:hover { color: #fff; background: #252525; }.sidebar__navigation :deep(.nav-item.is-active) { color: #fff; background: linear-gradient(180deg, #353535, #2d2d2d); box-shadow: inset 0 1px #4a4a4a; }.sidebar__navigation :deep(.nav-item.is-icon-only), .nav-item.is-icon-only { justify-content: center; padding: 0; }
-.order-entry { margin-top: 0 !important; }.order-links { margin: 2px 0 6px 18px; }.order-links :deep(.nav-item) { min-height: 34px; font-size: 14px; }.order-links :deep(.nav-item svg) { display: none; }.after-order-navigation { margin-top: 4px !important; }
+.order-entry { margin-top: 0 !important; }.order-links { margin: 2px 0 6px 18px !important; }.order-links :deep(.nav-item) { min-height: 34px; font-size: 14px; }.order-links :deep(.nav-item svg) { display: none; }.after-order-navigation { margin-top: 4px !important; }
 .sidebar__footer { padding-top: 12px; border-top: 1px solid #292929; }.account { display: flex; align-items: center; gap: 7px; min-height: 43px; padding: 8px 6px 0; color: #ddd; font-size: 15px; white-space: nowrap; }.account.is-icon-only { justify-content: center; padding-inline: 0; }.account__avatar { display: grid; width: 26px; height: 24px; color: white; font-size: 8px; font-weight: 800; background: #8659eb; border-radius: 7px; place-items: center; }.account__badge { padding: 3px 8px; color: #aaa; font-size: 12px; background: #333; border-radius: 10px; }.account__bell { margin-left: auto; }
 .settings-control { position: relative; }
 </style>
