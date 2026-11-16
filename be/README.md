@@ -5,28 +5,82 @@ FastAPI 负责 HTTP API，SQLAlchemy 负责数据库访问，MySQL 用于保存�
 
 ## 后端结构
 
-    be/
-    ├─ app/
-    │  ├─ main.py                 # 应用入口，创建 FastAPI 实例并注册路由
-    │  ├─ api/
-    │  │  └─ orders.py             # 订单列表、详情、创建和更新接口
-    │  ├─ models/                  # SQLAlchemy 数据模型
-    │  │  ├─ order.py              # 订单和订单项模型
-    │  │  ├─ product.py            # 商品和商品图片模型
-    │  │  └─ customer.py           # 客户模型
-    │  ├─ schemas/                 # Pydantic 请求和响应模型
-    │  │  └─ order.py              # 订单接口的数据结构和参数校验
-    │  ├─ services/                # 业务逻辑层
-    │  │  └─ order_service.py      # 订单查询、筛选、分页和状态处理
-    │  ├─ db/                      # 数据库连接和会话
-    │  │  ├─ session.py            # SQLAlchemy 引擎与会话依赖
-    │  │  └─ base.py               # 模型注册基类
-    │  └─ core/                    # 配置、异常处理和安全等基础能力
-    │     └─ config.py             # 环境变量与应用配置
-    ├─ tests/                      # 接口和业务逻辑测试
-    ├─ requirements.txt            # Python 依赖清单
-    ├─ Dockerfile                  # 后端镜像构建定义
-    └─ README.md                   # 本说明文件
+be/
+│
+├── app/
+│   │
+│   ├── main.py                       # 应用入口，创建 FastAPI 实例
+│   │
+│   ├── api/                          # API 接口层
+│   │   ├── __init__.py
+│   │   ├── deps.py                   # 公共依赖（数据库会话、权限等）
+│   │   │
+│   │   └── v1/                       # API 版本管理
+│   │       ├── __init__.py
+│   │       ├── router.py             # 注册所有 v1 路由
+│   │       ├── orders.py             # 订单相关接口
+│   │       ├── products.py           # 商品相关接口
+│   │       └── customers.py          # 客户相关接口
+│   │
+│   ├── models/                       # SQLAlchemy 数据模型
+│   │   ├── __init__.py
+│   │   ├── order.py                  # 订单主表模型
+│   │   ├── order_item.py             # 订单商品明细模型
+│   │   ├── product.py                # 商品模型
+│   │   ├── product_image.py          # 商品图片模型
+│   │   └── customer.py               # 客户模型
+│   │
+│   ├── schemas/                      # Pydantic 请求和响应模型
+│   │   ├── __init__.py
+│   │   ├── order.py                  # 订单请求、响应结构
+│   │   ├── order_item.py             # 订单商品数据结构
+│   │   ├── product.py                # 商品数据结构
+│   │   └── customer.py               # 客户数据结构
+│   │
+│   ├── services/                     # 业务逻辑层
+│   │   ├── __init__.py
+│   │   ├── order_service.py          # 订单查询、筛选、分页等
+│   │   ├── product_service.py       # 商品业务逻辑
+│   │   └── customer_service.py      # 客户业务逻辑
+│   │
+│   ├── repositories/                 # 数据访问层
+│   │   ├── __init__.py
+│   │   ├── order_repository.py       # 订单数据库查询
+│   │   ├── product_repository.py    # 商品数据库查询
+│   │   └── customer_repository.py   # 客户数据库查询
+│   │
+│   ├── db/                           # 数据库基础配置
+│   │   ├── __init__.py
+│   │   ├── session.py                # SQLAlchemy 引擎和 Session
+│   │   └── base.py                   # ORM 模型基类和模型注册
+│   │
+│   ├── core/                         # 核心配置
+│   │   ├── __init__.py
+│   │   ├── config.py                 # 环境变量和应用配置
+│   │   ├── exceptions.py             # 自定义异常处理
+│   │   └── logging.py                # 日志配置
+│   │
+│   └── storage/                      # 图片等文件存储
+│       ├── __init__.py
+│       └── image_storage.py          # 图片存储服务
+│
+├── alembic/                          # 数据库迁移管理
+│   ├── versions/                     # 数据库迁移版本文件
+│   └── env.py
+│
+├── tests/                             # 测试代码
+│   ├── __init__.py
+│   ├── test_orders.py
+│   ├── test_products.py
+│   └── test_customers.py
+│
+├── .env                               # 环境变量（不提交 Git）
+├── .env.example                       # 环境变量示例
+├── .gitignore
+├── alembic.ini                        # Alembic 配置
+├── requirements.txt                   # Python 依赖清单
+├── Dockerfile                         # 后端镜像构建定义
+└── README.md                          # 项目说明
 
 ## 各层职责
 
