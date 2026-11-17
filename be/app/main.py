@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException
-from app.database import get_db_connection
+from app.database.connection import get_db_connection
 
 app = FastAPI()
 
@@ -28,7 +28,7 @@ def test_database():
 
         return {
             "success": True,
-            "message": "MySQL connection successful",
+            "message": "MySQL connection successful!!!",
             "data": result
         }
 
