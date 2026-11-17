@@ -1,44 +1,44 @@
 from fastapi import FastAPI, HTTPException
-from app.database.connection import get_db_connection
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+
+# 引入数据库连接引擎
+from app.database.connection import engine
 
 app = FastAPI()
 
 
 @app.get("/api/db-test")
 def test_database():
-    connection = None
 
     try:
         # 获取数据库连接
-        connection = get_db_connection()
+        with engine.connect() as connection:
 
-        # 创建游标
-        with connection.cursor() as cursor:
+            # 执行sql查询
+            result = connection.execute(
+                text(
+                    """
+                    select
+                        VERSION() as db_version,
+                        DATABASE() as db_name,
+                        CURRENT_USER() as db_user
+                    """
+                )
+            )
 
-            # 执行 SQL 查询
-            cursor.execute("""
-                SELECT
-                    VERSION() AS mysql_version,
-                    DATABASE() AS database_name,
-                    CURRENT_USER() AS mysql_user
-            """)
-
-            # 获取查询结果
-            result = cursor.fetchone()
-
+            # 获取查询结果，返回的是一个行对象，也就是row，是用mappings()方法将其转换为字典形式
+            data = result.mappings().fetchone()
+        
+        # 返回查询结果
         return {
             "success": True,
-            "message": "MySQL connection successful!!!",
-            "data": result
+            "message": "Database connection successful!!!",
+            "data": dict(data) if data else None
         }
 
-    except Exception as e:
+    except SQLAlchemyError as e:
         raise HTTPException(
             status_code=500,
             detail=f"Database connection failed: {str(e)}"
         )
-
-    finally:
-        # 关闭数据库连接
-        if connection:
-            connection.close()
