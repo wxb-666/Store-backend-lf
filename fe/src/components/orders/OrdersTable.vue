@@ -12,7 +12,7 @@
 import { computed, ref } from 'vue'
 import { t } from '../../stores/locale'
 type Order = { number: string; paymentTime: string; paymentStatus: string; paymentMethod: string; logisticsStatus: string; totalAmount: string; productCount: number; countryRegion: string; operation: string }
-const props = defineProps<{ query: string }>()
+const props = defineProps<{ query: string; countryRegion: string; paymentMethod: string; paymentStatus: string }>()
 const orders: Order[] = [
   { number: '#D11', paymentTime: '2026-11-17 04:45', paymentStatus: 'Paid', paymentMethod: 'Credit card', logisticsStatus: 'Unfulfilled', totalAmount: '$150.00', productCount: 1, countryRegion: 'United States', operation: 'View' },
   { number: '#D10', paymentTime: '2026-11-17 02:17', paymentStatus: 'Paid', paymentMethod: 'PayPal', logisticsStatus: 'Unfulfilled', totalAmount: '$693.45', productCount: 3, countryRegion: 'Canada', operation: 'View' },
@@ -27,7 +27,17 @@ const orders: Order[] = [
   { number: '#D1', paymentTime: '2026-11-15 10:36', paymentStatus: 'Paid', paymentMethod: 'Shop Pay', logisticsStatus: 'Unfulfilled', totalAmount: '$200.00', productCount: 1, countryRegion: 'Canada', operation: 'View' },
 ]
 const selectedOrderNumbers = ref<string[]>([])
-const visibleOrders = computed(() => { const keyword = props.query.trim().toLowerCase(); return keyword ? orders.filter((order) => Object.values(order).some((value) => String(value).toLowerCase().includes(keyword))) : orders })
+const visibleOrders = computed(() => {
+  const keyword = props.query.trim().toLowerCase()
+  const status = props.paymentStatus.trim().toLowerCase()
+  return orders.filter((order) => {
+    const matchesKeyword = !keyword || Object.values(order).some((value) => String(value).toLowerCase().includes(keyword))
+    const matchesCountry = !props.countryRegion || order.countryRegion === props.countryRegion
+    const matchesMethod = !props.paymentMethod || order.paymentMethod === props.paymentMethod
+    const matchesStatus = !status || order.paymentStatus.toLowerCase().includes(status)
+    return matchesKeyword && matchesCountry && matchesMethod && matchesStatus
+  })
+})
 const allSelected = computed({ get: () => visibleOrders.value.length > 0 && visibleOrders.value.every((order) => selectedOrderNumbers.value.includes(order.number)), set: (checked: boolean) => { selectedOrderNumbers.value = checked ? visibleOrders.value.map((order) => order.number) : [] } })
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <AppShell v-model:collapsed="isSidebarCollapsed" @navigate="activeView = $event">
+  <AppShell @navigate="activeView = $event">
     <DashboardView v-if="activeView === 'dashboard'" />
     <OrdersView v-else />
   </AppShell>
@@ -11,6 +11,5 @@ import AppShell from './components/layout/AppShell.vue'
 import DashboardView from './views/DashboardView.vue'
 import OrdersView from './views/OrdersView.vue'
 
-const isSidebarCollapsed = ref(false)
 const activeView = ref<'dashboard' | 'orders'>('dashboard')
 </script>

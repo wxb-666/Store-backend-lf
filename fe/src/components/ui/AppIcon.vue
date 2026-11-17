@@ -14,6 +14,8 @@
     <path v-else-if="name === 'plus'" d="M12 5v14M5 12h14" />
     <path v-else-if="name === 'settings'" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm7.4 0a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5v.1h-4v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1-2.8-2.8.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.5-1H3v-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1L7 4.2l.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V3h4v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 2.8 2.8-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.1v4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
     <path v-else-if="name === 'search'" d="M16 16l4 4M10.8 17.6a6.8 6.8 0 1 0 0-13.6 6.8 6.8 0 0 0 0 13.6Z" />
+    <path v-else-if="name === 'calendar'" d="M4 6h16v15H4zM8 3v6m8-6v6M4 10h16" />
+    <path v-else-if="name === 'chevron-down'" d="m7 9 5 5 5-5" />
     <path v-else-if="name === 'bell'" d="M18 9a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8M10 21h4" />
     <path v-else-if="name === 'panel'" d="M3 3h18v18H3zM9 3v18" />
     <path v-else-if="name === 'history'" d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5M12 7v5l3 2" />
@@ -24,6 +26,6 @@
 </template>
 
 <script setup lang="ts">
-export type IconName = 'analytics' | 'bell' | 'bot' | 'content' | 'customers' | 'finance' | 'growth' | 'history' | 'home' | 'market' | 'mic' | 'orders' | 'panel' | 'plus' | 'rocket' | 'search' | 'settings' | 'store' | 'tag'
+export type IconName = 'analytics' | 'bell' | 'bot' | 'calendar' | 'chevron-down' | 'content' | 'customers' | 'finance' | 'growth' | 'history' | 'home' | 'market' | 'mic' | 'orders' | 'panel' | 'plus' | 'rocket' | 'search' | 'settings' | 'store' | 'tag'
 withDefaults(defineProps<{ name: IconName; size?: number }>(), { size: 20 })
 </script>

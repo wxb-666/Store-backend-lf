@@ -1,10 +1,9 @@
 <template>
   <section class="nav-group">
-    <p v-if="titleKey && !collapsed" class="nav-group__title">{{ t(titleKey) }}</p>
-    <div v-else-if="titleKey" class="nav-group__divider" />
-    <button v-for="item in items" :key="item.id" class="nav-item" :class="{ 'is-active': item.id === activeItem, 'is-icon-only': collapsed }" :title="collapsed ? t(item.labelKey) : undefined" type="button" @click="emit('select', item.id)">
+    <p v-if="titleKey" class="nav-group__title">{{ t(titleKey) }}</p>
+    <button v-for="item in items" :key="item.id" class="nav-item" :class="{ 'is-active': item.id === activeItem }" type="button" @click="emit('select', item.id)">
       <AppIcon :name="item.icon" />
-      <span v-if="!collapsed">{{ t(item.labelKey) }}</span>
+      <span>{{ t(item.labelKey) }}</span>
     </button>
   </section>
 </template>
@@ -13,6 +12,6 @@
 import AppIcon, { type IconName } from '../ui/AppIcon.vue'
 import { t, type MessageKey } from '../../stores/locale'
 type NavigationItem = { id: string; labelKey: MessageKey; icon: IconName }
-defineProps<{ titleKey?: MessageKey; items: NavigationItem[]; collapsed: boolean; activeItem: string }>()
+defineProps<{ titleKey?: MessageKey; items: NavigationItem[]; activeItem: string }>()
 const emit = defineEmits<{ select: [label: string] }>()
 </script>

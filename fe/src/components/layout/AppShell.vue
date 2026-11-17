@@ -1,6 +1,6 @@
 <template>
   <div class="app-shell">
-    <AppSidebar v-model:collapsed="collapsed" @navigate="emit('navigate', $event)" />
+    <AppSidebar @navigate="emit('navigate', $event)" />
     <main class="app-shell__content"><slot /></main>
   </div>
 </template>
@@ -8,7 +8,6 @@
 <script setup lang="ts">
 import AppSidebar from './AppSidebar.vue'
 
-const collapsed = defineModel<boolean>('collapsed', { required: true })
 const emit = defineEmits<{ navigate: [view: 'dashboard' | 'orders'] }>()
 </script>
 

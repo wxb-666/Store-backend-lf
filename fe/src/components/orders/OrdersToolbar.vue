@@ -1,17 +1,128 @@
 <template>
-  <div class="orders-toolbar">
-    <button class="all-filter" type="button">{{ t('orders.all') }} <span class="chevrons" aria-hidden="true"><span>⌃</span><span>⌄</span></span></button>
-    <label><AppIcon name="search" :size="20" /><input v-model="query" type="search" :placeholder="t('orders.searchPlaceholder')" /></label>
-    <button class="columns-button" type="button" :aria-label="t('orders.editColumns')">▥</button>
-  </div>
+  <form class="orders-toolbar" @submit.prevent="submitSearch">
+    <div class="date-range filter-field">
+      <span class="date-placeholder">Start date</span>
+      <span class="date-divider" aria-hidden="true">~</span>
+      <span class="date-placeholder">End date</span>
+      <AppIcon class="calendar-icon" name="calendar" :size="15" />
+    </div>
+
+    <div ref="countryFilter" class="select-filter">
+      <button class="filter-field select-field" type="button" aria-haspopup="listbox" :aria-expanded="countryRegionOpen" @click="countryRegionOpen = !countryRegionOpen">
+        <span :class="{ 'is-placeholder': !countryRegion }">{{ countryRegion || 'Country/Region' }}</span>
+        <AppIcon class="select-chevron" name="chevron-down" :size="18" />
+      </button>
+      <div v-if="countryRegionOpen" class="select-menu" role="listbox" aria-label="Country or region">
+        <button v-for="country in countries" :key="country" class="select-option" :class="{ 'is-selected': countryRegion === country }" type="button" role="option" :aria-selected="countryRegion === country" @click="selectCountryRegion(country)">
+          {{ country }}
+        </button>
+      </div>
+    </div>
+
+    <div ref="methodFilter" class="select-filter">
+      <button class="filter-field select-field" type="button" aria-haspopup="listbox" :aria-expanded="paymentMethodOpen" @click="paymentMethodOpen = !paymentMethodOpen">
+        <span :class="{ 'is-placeholder': !paymentMethod }">{{ paymentMethod || 'Payment method' }}</span>
+        <AppIcon class="select-chevron" name="chevron-down" :size="18" />
+      </button>
+      <div v-if="paymentMethodOpen" class="select-menu" role="listbox" aria-label="Payment method">
+        <button v-for="method in paymentMethods" :key="method" class="select-option" :class="{ 'is-selected': paymentMethod === method }" type="button" role="option" :aria-selected="paymentMethod === method" @click="selectPaymentMethod(method)">
+          {{ method }}
+        </button>
+      </div>
+    </div>
+
+    <label class="filter-field status-field">
+      <input v-model="paymentStatus" type="search" placeholder="Payment status" aria-label="Payment status" />
+    </label>
+
+    <div class="search-field filter-field">
+      <AppIcon name="search" :size="19" />
+      <input v-model="draftQuery" type="search" :placeholder="t('orders.searchPlaceholder')" aria-label="Order search" />
+      <button type="submit">Search</button>
+    </div>
+  </form>
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import AppIcon from '../ui/AppIcon.vue'
 import { t } from '../../stores/locale'
+
 const query = defineModel<string>('query', { required: true })
+const countryRegion = defineModel<string>('countryRegion', { required: true })
+const paymentMethod = defineModel<string>('paymentMethod', { required: true })
+const paymentStatus = defineModel<string>('paymentStatus', { required: true })
+const draftQuery = ref(query.value)
+const paymentMethodOpen = ref(false)
+const countryRegionOpen = ref(false)
+const methodFilter = ref<HTMLElement | null>(null)
+const countryFilter = ref<HTMLElement | null>(null)
+const paymentMethods = ['Credit card', 'PayPal', 'Shop Pay']
+const countries = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Germany', 'France', 'Japan', 'Singapore']
+
+watch(query, (value) => { draftQuery.value = value })
+
+function closeSelectMenus(event: PointerEvent) {
+  if (event.target instanceof Node && !methodFilter.value?.contains(event.target)) paymentMethodOpen.value = false
+  if (event.target instanceof Node && !countryFilter.value?.contains(event.target)) countryRegionOpen.value = false
+}
+
+function handleMenuKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    paymentMethodOpen.value = false
+    countryRegionOpen.value = false
+  }
+}
+
+function selectPaymentMethod(method: string) {
+  paymentMethod.value = method
+  paymentMethodOpen.value = false
+}
+
+function selectCountryRegion(country: string) {
+  countryRegion.value = country
+  countryRegionOpen.value = false
+}
+
+onMounted(() => {
+  document.addEventListener('pointerdown', closeSelectMenus)
+  document.addEventListener('keydown', handleMenuKeydown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('pointerdown', closeSelectMenus)
+  document.removeEventListener('keydown', handleMenuKeydown)
+})
+
+function submitSearch() {
+  query.value = draftQuery.value.trim()
+}
 </script>
 
 <style scoped>
-.orders-toolbar { display: flex; align-items: center; min-height: 47px; padding: 0 15px; background: white; border: 1px solid #e4e4e4; border-radius: 14px; box-shadow: 0 2px 7px rgb(0 0 0 / 4%); }.all-filter, .columns-button { padding: 5px 1px; color: #242424; font-size: 14px; background: transparent; border: 0; }.all-filter { display: inline-flex; align-items: center; gap: 5px; margin-right: 25px; }.chevrons { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 10px; font-size: 11px; line-height: 7px; }.chevrons span { display: block; height: 7px; }label { display: flex; align-items: center; flex: 1; gap: 10px; color: #5e5e5e; }input { width: 100%; border: 0; outline: 0; color: #222; font-size: 15px; }input::placeholder { color: #525252; }.columns-button { font-size: 21px; transform: rotate(90deg); }
+.orders-toolbar { display: grid; grid-template-columns: 230px 170px 180px 180px minmax(320px, 1fr); align-items: center; gap: 10px; margin-bottom: 14px; }
+.filter-field { display: flex; align-items: center; height: 43px; min-width: 0; padding: 0 12px; color: #555; font-size: 14px; line-height: 20px; background: #fff; border: 1px solid #d8d8d8; border-radius: 8px; box-shadow: 0 1px 2px rgb(0 0 0 / 3%); }
+.filter-field:focus-within { border-color: #777; box-shadow: 0 0 0 2px rgb(0 0 0 / 8%); }
+.date-range { gap: 9px; padding-inline: 12px; border-radius: 5px; }
+.date-range { justify-content: flex-start; }
+.date-placeholder { overflow: hidden; color: #555; font-size: inherit; white-space: nowrap; }
+.date-divider { flex: 0 0 auto; color: #888; }
+.calendar-icon { flex: 0 0 auto; margin-left: auto; color: #777; }
+.select-filter { position: relative; min-width: 0; }
+.select-field { width: 100%; justify-content: space-between; gap: 10px; border-radius: 5px; text-align: left; cursor: pointer; }
+.select-field > span { overflow: hidden; color: #555; font-size: inherit; text-overflow: ellipsis; white-space: nowrap; }
+.select-field > span.is-placeholder { color: #555; }
+.select-chevron { flex: 0 0 auto; color: #777; }
+.select-menu { position: absolute; z-index: 20; top: calc(100% + 6px); right: 0; left: 0; display: grid; gap: 2px; padding: 5px; background: #fff; border: 1px solid #e2e2e2; border-radius: 8px; box-shadow: 0 6px 18px rgb(0 0 0 / 12%); }
+.select-option { min-height: 36px; padding: 0 10px; color: #333; font: inherit; text-align: left; background: transparent; border: 0; border-radius: 5px; cursor: pointer; }
+.select-option:hover, .select-option.is-selected { background: #f2f2f2; }
+.select-option.is-selected { font-weight: 600; }
+.filter-field > input { width: 100%; min-width: 0; height: 100%; padding: 0; color: #555; font: inherit; background: transparent; border: 0; outline: 0; }
+.filter-field > input::placeholder { color: #555; opacity: 1; }
+.search-field { gap: 9px; padding-right: 5px; color: #555; }
+.search-field input { flex: 1; }
+.search-field button { height: 33px; padding: 0 15px; color: #fff; font-size: 14px; font-weight: 500; white-space: nowrap; background: #252525; border: 1px solid #252525; border-radius: 6px; cursor: pointer; }
+.search-field button:hover { background: #414141; }
+@media (max-width: 1120px) { .orders-toolbar { grid-template-columns: 230px 170px 180px; }.search-field { grid-column: 1 / -1; } }
+@media (max-width: 700px) { .orders-toolbar { grid-template-columns: minmax(0, 1fr); gap: 8px; }.search-field { grid-column: auto; }.date-range { min-width: 0; } }
 </style>
