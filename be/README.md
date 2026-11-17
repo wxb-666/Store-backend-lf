@@ -27,9 +27,7 @@ be/
 │   │   ├── __init__.py
 │   │   ├── order.py                  # 订单主表模型
 │   │   ├── order_item.py             # 订单商品明细模型
-│   │   ├── product.py                # 商品模型
-│   │   ├── product_image.py          # 商品图片模型
-│   │   └── customer.py               # 客户模型
+│   │   └── product.py                # 商品模型
 │   │
 │   ├── schemas/                      # Pydantic 请求和响应模型
 │   │   ├── __init__.py
@@ -50,10 +48,9 @@ be/
 │   │   ├── product_repository.py    # 商品数据库查询
 │   │   └── customer_repository.py   # 客户数据库查询
 │   │
-│   ├── db/                           # 数据库基础配置
+│   ├── database/                     # 数据库基础配置
 │   │   ├── __init__.py
-│   │   ├── session.py                # SQLAlchemy 引擎和 Session
-│   │   └── base.py                   # ORM 模型基类和模型注册
+│   │   └── connection.py             # SQLAlchemy 引擎和 Session、ORM 模型基类
 │   │
 │   ├── core/                         # 核心配置
 │   │   ├── __init__.py
@@ -74,6 +71,10 @@ be/
 │   ├── test_orders.py
 │   ├── test_products.py
 │   └── test_customers.py
+│
+├── docs/                             # 后端设计文件
+│   ├── database-design.md            # 数据库设计
+│   └── api-design.py                 # API设计
 │
 ├── .env                               # 环境变量（不提交 Git）
 ├── .env.example                       # 环境变量示例
