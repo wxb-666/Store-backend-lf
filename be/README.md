@@ -5,6 +5,7 @@ FastAPI 负责 HTTP API，SQLAlchemy 负责数据库访问，MySQL 用于保存�
 
 ## 后端结构
 
+```text
 be/
 │
 ├── app/
@@ -81,6 +82,7 @@ be/
 ├── requirements.txt                   # Python 依赖清单
 ├── Dockerfile                         # 后端镜像构建定义
 └── README.md                          # 项目说明
+```
 
 ## 各层职责
 
