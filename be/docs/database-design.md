@@ -1,10 +1,11 @@
 # DATABASE-DESIGN
 
-## 订单表
+## 订单表（Order）
 
 | 字段名                   | 字段类型          | 字段描述              |
 |-----------------------|---------------|-------------------|
-| order_number          | VARCHAR(64)   | 订单编号，订单表中的唯一标识    |
+| order_id              | BIGINT        | 订单id，主键，订单表中的唯一标识  |
+| order_number          | VARCHAR(64) UNIQUE   | 订单编号           |
 | order_status          | VARCHAR(32)   | 订单状态              |
 | generation_time       | DATETIME      | 订单生成时间            |
 | payment_time          | DATETIME      | 订单支付时间            |
@@ -12,6 +13,7 @@
 | payment_method        | VARCHAR(64)   | 支付方式              |
 | payment_number        | VARCHAR(128)  | 支付流水号或第三方支付交易编号   |
 | total_amount          | DECIMAL(12,2) | 订单总金额             |
+| currency_code         | DECIMAL(12,2) | 订单总金额             |
 | logistic_order_number | VARCHAR(128)  | 物流单号              |
 | logistics_status      | VARCHAR(32)   | 物流状态              |
 | customer_name         | VARCHAR(128)  | 客户姓名或收件人姓名        |
@@ -27,20 +29,40 @@
 | domain                | VARCHAR(64)   | 域名                |
 | number_of_products    | INT UNSIGNED  | 订单包含的商品总件数        |
 
-## 商品表
+## 商品表（Product）
 
 | 字段名            | 字段类型          | 字段描述            |
 |----------------|---------------|-----------------|
-| product_sku    | VARCHAR(64)   | 商品sku，商品表中的唯一标识 |
+| product_id     | BIGINT        | 商品id，主键，商品表中的唯一标识  |
+| product_sku    | VARCHAR(64)  UNIQUE | 商品sku     |
 | product_name   | VARCHAR(255)  | 商品名             |
 | product_slug   | VARCHAR(255)  | 商品slug          |
-| specifications | VARCHAR(255)  | 商品规格            |
-| product_image  | VARCHAR(2048) | 商品图片链接          |
+| product_price  | DECIMAL(12,2) | 商品金额          |
+| product_stock  | INT UNSIGNED  | 商品库存          |
+| specifications | VARCHAR(255)  | 商品规格          |
+| product_image  | VARCHAR(2048) | 商品图片链接      |
 
-## 订单明细表
+## 商品标签表（Product_tag）
+
+| 字段名            | 字段类型          | 字段描述            |
+|----------------|---------------|-----------------|
+| tag_id         | BIGINT        | 标签id，主键，标签表中的唯一标识  |
+| tag_name       | VARCHAR(100)  | 标签名 |
+
+## 订单明细表（Order_items）
 
 | 字段名            | 字段类型        | 字段描述            |
 |----------------|-------------|-----------------|
+| id             | BIGINT      | id，主键，明细表中的唯一标识  |
 | order_number   | VARCHAR(64) | 订单编号，订单表中的唯一标识  |
 | product_sku    | VARCHAR(64) | 商品sku，商品表中的唯一标识 |
 | product_number | INT         | 商品数量，在本订单中的数量   |
+
+## 商品标签关联表（Product_tag_relations）
+
+| 字段名            | 字段类型        | 字段描述            |
+|----------------|-------------|-----------------|
+| id             | BIGINT      | id，主键，关联表中的唯一标识  |
+| product_id     | BIGINT      | 商品id     |
+| tag_id         | BIGINT      | 标签id   |
+
