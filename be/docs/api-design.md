@@ -51,9 +51,13 @@
 示例请求：
 
 ```http
-GET /api/v1/orders?page=1&page_size=20&payment_status=Paid&country_region=United%20States&q=D11
+GET http://localhost:8000/api/v1/orders
 
-GET /api/v1/orders?page=1&page_size=20&domain=lfshop.com&q=classic-t-shirt
+GET http://localhost:8000/api/v1/orders?domain=pawsneedus.com
+
+GET http://localhost:8000/api/v1/orders?q=fried-hair-cat-print-tote-bag
+
+GET http://localhost:8000/api/v1/orders?domain=pawsneedus.com&q=fried-hair-cat-print-tote-bag
 ```
 
 #### 3.1.3 成功响应
