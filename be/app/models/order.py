@@ -9,6 +9,7 @@ from sqlalchemy import (
     Text,
     Integer,
     func,
+    UniqueConstraint,
 )
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import Mapped, mapped_column
@@ -22,6 +23,14 @@ class Order(Base):
 
     __tablename__ = "orders"
 
+    __table_args__ = (
+        UniqueConstraint(
+            "domain",
+            "order_number",
+            name="uq_domain_order_number"
+        ),
+    )
+
     # ==================== 基础订单信息 ====================
 
     order_id: Mapped[int] = mapped_column(
@@ -33,7 +42,6 @@ class Order(Base):
 
     order_number: Mapped[str] = mapped_column(
         String(64),
-        unique=True,
         nullable=False,
         comment="订单编号"
     )
@@ -170,7 +178,7 @@ class Order(Base):
         comment="订单补充信息或客户备注"
     )
 
-    domain: Mapped[str | None] = mapped_column(
+    domain: Mapped[str] = mapped_column(
         String(64),
         nullable=True,
         comment="域名"

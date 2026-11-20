@@ -12,7 +12,14 @@ class Product(Base):
 
     __tablename__ = "products"
 
-    # 商品 ID：主键，自增
+    __table_args__ = (
+        UniqueConstraint(
+            "domain",
+            "product_sku",
+            name="uq_domain_product_sku"
+        ),
+    )
+
     product_id: Mapped[int] = mapped_column(
         BigInteger,
         primary_key=True,
@@ -20,29 +27,31 @@ class Product(Base):
         comment="商品ID"
     )
 
-    # 商品 SKU：唯一，不允许为空
+    # 店铺域名
+    domain: Mapped[str] = mapped_column(
+        String(64),
+        nullable=False,
+        comment="店铺域名"
+    )
+
     product_sku: Mapped[str] = mapped_column(
         String(64),
-        unique=True,
         nullable=False,
         comment="商品SKU"
     )
 
-    # 商品名称
     product_name: Mapped[str] = mapped_column(
         String(255),
         nullable=False,
         comment="商品名称"
     )
 
-    # 商品 Slug
     product_slug: Mapped[str | None] = mapped_column(
         String(255),
         nullable=True,
         comment="商品Slug"
     )
 
-    # 商品价格
     product_price: Mapped[Decimal] = mapped_column(
         Numeric(12, 2),
         nullable=False,
@@ -50,7 +59,6 @@ class Product(Base):
         comment="商品金额"
     )
 
-    # 商品库存：MySQL 无符号 INT
     product_stock: Mapped[int] = mapped_column(
         INTEGER(unsigned=True),
         nullable=False,
@@ -58,14 +66,12 @@ class Product(Base):
         comment="商品库存"
     )
 
-    # 商品规格
     specifications: Mapped[str | None] = mapped_column(
         String(255),
         nullable=True,
         comment="商品规格"
     )
 
-    # 商品图片链接
     product_image: Mapped[str | None] = mapped_column(
         String(2048),
         nullable=True,

@@ -34,6 +34,7 @@
 | 字段名            | 字段类型          | 字段描述            |
 |----------------|---------------|-----------------|
 | product_id     | BIGINT        | 商品id，主键，商品表中的唯一标识  |
+| domain         | VARCHAR(64)   | 域名                |
 | product_sku    | VARCHAR(64)  UNIQUE | 商品sku     |
 | product_name   | VARCHAR(255)  | 商品名             |
 | product_slug   | VARCHAR(255)  | 商品slug          |
@@ -54,6 +55,7 @@
 | 字段名            | 字段类型        | 字段描述            |
 |----------------|-------------|-----------------|
 | id             | BIGINT      | id，主键，明细表中的唯一标识  |
+| domain         | VARCHAR(64) | 域名                |
 | order_number   | VARCHAR(64) | 订单编号，订单表中的唯一标识  |
 | product_sku    | VARCHAR(64) | 商品sku，商品表中的唯一标识 |
 | product_number | INT         | 商品数量，在本订单中的数量   |

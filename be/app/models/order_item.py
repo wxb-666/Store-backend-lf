@@ -1,5 +1,10 @@
-
-from sqlalchemy import BigInteger, String, ForeignKey, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    String,
+    ForeignKey,
+    ForeignKeyConstraint,
+    UniqueConstraint,
+)
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -11,12 +16,27 @@ class OrderItem(Base):
 
     __tablename__ = "order_items"
 
-    # 同一订单中的同一个 SKU 只保留一条明细
     __table_args__ = (
+        # 同一店铺、同一订单中的同一个 SKU 只保留一条明细
         UniqueConstraint(
+            "domain",
             "order_number",
             "product_sku",
-            name="uq_order_number_product_sku"
+            name="uq_domain_order_number_product_sku"
+        ),
+
+        # domain + order_number 联合外键，关联订单表
+        ForeignKeyConstraint(
+            ["domain", "order_number"],
+            ["orders.domain", "orders.order_number"],
+            name="fk_order_item_order"
+        ),
+
+        # domain + product_sku 联合外键，关联商品表
+        ForeignKeyConstraint(
+            ["domain", "product_sku"],
+            ["products.domain", "products.product_sku"],
+            name="fk_order_item_product"
         ),
     )
 
@@ -28,18 +48,23 @@ class OrderItem(Base):
         comment="订单明细ID"
     )
 
-    # 订单编号：外键，关联 order 表
+    # 订单编号
     order_number: Mapped[str] = mapped_column(
         String(64),
-        ForeignKey("orders.order_number"),
         nullable=False,
         comment="订单编号"
     )
 
-    # 商品 SKU：外键，关联 product 表
+    # 店铺域名
+    domain: Mapped[str] = mapped_column(
+        String(64),
+        nullable=False,
+        comment="店铺域名"
+    )
+
+    # 商品 SKU
     product_sku: Mapped[str] = mapped_column(
         String(64),
-        ForeignKey("products.product_sku"),
         nullable=False,
         comment="商品SKU"
     )
