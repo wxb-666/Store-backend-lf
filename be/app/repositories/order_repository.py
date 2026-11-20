@@ -1,17 +1,17 @@
-from datetime immport date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta
 
 from sqlalchemy import select, func, or_
 from sqlalchemy.orm import Session
 
 # 引入定义好的数据模型
-from be.app.models.order import Order
-from be.app.models.order_item import OrderItem
-from be.app.models.product import Product
+from app.models.order import Order
+from app.models.order_item import OrderItem
+from app.models.product import Product
 
 # 定义排序字段
 SORT_COLUMNS = {
     "payment_time": Order.payment_time,
-    "generated_time": Order.generated_time,
+    "generated_time": Order.generation_time,
     "total_amount": Order.total_amount,
     "order_number": Order.order_number,
 }
@@ -68,7 +68,7 @@ def get_order_list(
             .select_from(OrderItem)
             .join(
                 Product,  # 关联 Product 表
-                OrderItem.prodcut_id == Product.id  # 关联条件
+                OrderItem.product_sku == Product.product_sku  # 关联条件
             )
             .where(
                 OrderItem.order_number == Order.order_number,  # 关联到外层 order 表
@@ -88,19 +88,19 @@ def get_order_list(
         )
 
         # 查询符合条件的订单条数
-        count_statement = select(
+        count_statement = (
             select(func.count())
             .select_from(Order)
             .where(*filters)  # 需要满足所有的筛选条件的订单
         )
         
-        total = db.scalars(count_statement) or 0  # 执行查询，获取符合条件的订单总数，如果没有符合条件的订单，则 total 为 0
+        total = db.scalar(count_statement) or 0  # 执行查询，获取符合条件的订单总数，如果没有符合条件的订单，则 total 为 0
 
         # 排序
         sort_column = SORT_COLUMNS.get(sort_by, Order.payment_time)  # 获取排序字段，如果没有指定排序字段，则默认按支付时间排序
 
         if sort_order not in ("asc", "desc"):
-            raise ValueError(f"不支持指定的排序方向：{sort_order}, 仅支持 "asc" 和 "desc"! ") 
+            raise ValueError(f"不支持指定的排序方向：{sort_order}, 仅支持 asc 和 desc! ") 
         
         if sort_order == "asc":
             order_by = sort_column.asc()  # 升序排序
@@ -142,9 +142,9 @@ def get_order_list(
 
         # 按订单编号整理商品明细
         for order_item, product in item_results:
-            product_items_map.setdefault(
+            product_item_map.setdefault(
                 order_item.order_number,
                 []
             ).append((order_item, product))
 
-    return orders, total, product_items_map
+    return orders, total, product_item_map

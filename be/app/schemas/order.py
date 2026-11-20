@@ -3,7 +3,7 @@ from datetime import datetime
 from decimal import Decimal
 
 # 从 order_item.py 中导入 OrderListProductResponse
-from be.app.schemas.order_item import OrderListProductResponse
+from app.schemas.order_item import OrderListProductResponse
 
 class OrderListResponse(BaseModel):
     # 订单列表中单个订单的响应数据模型，items 字段中的每个元素都是这个模型的实例
