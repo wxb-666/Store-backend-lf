@@ -10,9 +10,9 @@ class OrderListResponse(BaseModel):
 
     order_id: int
     order_number: str
-    payment_time: datetime
-    payment_status: str
-    payment_method: str
+    payment_time: datetime | None
+    payment_status: str | None
+    payment_method: str | None
     logistics_status: str
     total_amount: Decimal
     currency_code: str
