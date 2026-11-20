@@ -3,6 +3,7 @@
 | 版本   | 修改日期   | 修改内容                                     |
 |--------|------------|----------------------------------------------|
 | v0.1.0 | 2026-11-19 | 新增 api 设计文档，完成订单模块的 api 设计。 |
+| v0.1.1 | 2026-11-20 | 微调订单模块的 api 设计，将商品明细价格删除。 |
 
 ## 1. 文档说明
 
@@ -54,6 +55,7 @@ GET /api/v1/orders?page=1&page_size=20&payment_status=Paid&country_region=United
 
 GET /api/v1/orders?page=1&page_size=20&domain=lfshop.com&q=classic-t-shirt
 ```
+
 #### 3.1.3 成功响应
 
 HTTP 状态码：`200 OK`
@@ -151,3 +153,166 @@ HTTP 状态码：`200 OK`
 
 ### 3.2 获取订单详情
 
+#### 3.2.1 接口信息
+
+| 项目     | 说明                                                                     |
+|----------|--------------------------------------------------------------------------|
+| 接口名称 | 获取订单详情                                                             |
+| 请求方式 | GET                                                                      |
+| 接口地址 | `/api/v1/orders/{order_id}`                                              |
+| 功能说明 | 根据订单 ID 获取订单基本信息、支付信息、客户信息、物流信息及订单商品明细 |
+
+#### 3.2.2 请求参数
+
+| 参数名   | 类型    | 是否必填 | 说明      |
+|----------|---------|----------|-----------|
+| order_id | integer | 是       | 订单表 ID |
+
+示例请求：
+
+```http
+GET /api/v1/orders/11034
+```
+
+#### 3.2.3 成功响应
+
+HTTP 状态码：`200 OK`
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "order_info": {
+      "order_id": 11034,
+      "order_number": "53956M100016",
+      "order_status": "Completed",
+      "generation_time": "2026-11-17 04:30:00",
+      "total_amount": "150.00",
+      "number_of_products": 1
+    },
+    "payment_info": {
+      "payment_status": "Paid",
+      "payment_method": "PayPal",
+      "payment_time": "2026-11-17 04:45:00",
+      "payment_number": "8TX97690EJ630910F"
+    },
+    "customer_info": {
+      "customer_name": "John Smith",
+      "mailbox": "john@example.com",
+      "phone": "+1 1234567890",
+      "country_region": "United States",
+      "province_state": "Illinois",
+      "city": "Chicago",
+      "address": "123 Main Street",
+      "apartment": "Apt 101",
+      "postcode": "90001",
+      "extra_information": null
+    },
+    "logistics_info": {
+      "logistics_status": "Unfulfilled",
+      "logistic_order_number": "JSEET1801515622YQ"
+    },
+    "order_items": [
+      {
+        "id": 1,
+        "product_id": 101,
+        "product_name": "Classic T-Shirt",
+        "product_sku": "TSHIRT-001",
+        "product_image": "https://example.com/image.jpg",
+        "unit_price": "150.00",
+        "quantity": 1
+      }
+    ]
+  }
+}
+```
+
+#### 3.2.4 响应字段说明
+
+(1) 订单信息 `order_info`
+
+| 字段名             | 类型    | 说明           |
+|--------------------|---------|----------------|
+| order_id           | integer | 订单数据库 ID  |
+| order_number       | string  | 订单编号       |
+| order_status       | string  | 订单状态       |
+| generation_time    | string  | 订单创建时间   |
+| total_amount       | string  | 订单总金额     |
+| number_of_products | integer | 订单商品总件数 |
+
+(2) 支付信息 `payment_info`
+
+| 字段名         | 类型        | 说明                 |
+|----------------|-------------|----------------------|
+| payment_status | string      | 支付状态             |
+| payment_method | string/null | 支付方式             |
+| payment_time   | string/null | 支付时间             |
+| payment_number | string/null | 支付流水号或支付编号 |
+
+(3) 客户信息 `customer_info`
+
+| 字段名            | 类型        | 说明                       |
+|-------------------|-------------|----------------------------|
+| customer_name     | string      | 客户姓名                   |
+| mailbox           | string/null | 客户邮箱                   |
+| phone             | string/null | 联系电话                   |
+| country_region    | string/null | 国家/地区                  |
+| province_state    | string/null | 省/州                      |
+| city              | string/null | 城市                       |
+| address           | string/null | 详细地址                   |
+| apartment         | string/null | 公寓、楼栋或单元等补充地址 |
+| postcode          | string/null | 邮政编码                   |
+| extra_information | string/null | 客户补充说明               |
+
+(4) 物流信息 `logistics_info`
+
+| 字段名                | 类型        | 说明     |
+|-----------------------|-------------|----------|
+| logistics_status      | string      | 物流状态 |
+| logistic_order_number | string/null | 物流单号 |
+
+(5) 订单商品明细 `order_items`
+
+| 字段名        | 类型        | 说明                 |
+|---------------|-------------|----------------------|
+| id            | integer     | 订单明细 ID          |
+| product_id    | integer     | 商品 ID              |
+| product_name  | string      | 下单时的商品名称     |
+| product_sku   | string      | 下单时的商品 SKU     |
+| product_image | string/null | 下单时的商品图片地址 |
+| unit_price    | string      | 下单时的商品单价     |
+| quantity      | integer     | 购买数量             |
+
+## 4. 错误响应
+
+### 4.1 订单不存在
+
+HTTP 状态码：`404 Not Found`
+
+```json
+{
+  "code": 404,
+  "message": "Order not found",
+  "data": null
+}
+```
+
+### 4.2 请求参数错误
+
+HTTP 状态码：`422 Unprocessable Entity`
+
+```json
+{
+  "code": 422,
+  "message": "Invalid request parameters",
+  "data": null
+}
+```
+
+## 5. 数据查询说明
+
+- 订单列表接口主要查询 `orders` 表。
+- 订单详情接口查询 `orders` 表，并通过订单明细关联 `order_items` 和 `products`，组装完整响应。
+- `order_items` 建议保存下单时的商品名称、SKU、图片和单价等快照字段，避免商品资料后续修改影响历史订单展示。
+- `number_of_products` 表示订单中商品的总件数。例如商品 A 购买 2 件、商品 B 购买 3 件，则该值为 5。
