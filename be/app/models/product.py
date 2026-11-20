@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from sqlalchemy import BigInteger, String, Numeric
+from sqlalchemy import BigInteger, String, Numeric, UniqueConstraint
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.orm import Mapped, mapped_column
 
