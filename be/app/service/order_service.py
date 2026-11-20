@@ -67,7 +67,7 @@ def get_order_list_service(
 
             product_list.append(product_response)
 
-        # 4. 整理当前订单的信息
+        # 整理当前订单的信息
         order_response = OrderListResponse(
             order_id=order.order_id,
             order_number=order.order_number,
@@ -85,7 +85,7 @@ def get_order_list_service(
 
         order_list.append(order_response)
 
-    # 5. 组装完整的 API 响应结构
+    # 组装完整的 API 响应结构
     data_response = OrderListDataResponse(
         total=total,
         page=page,
