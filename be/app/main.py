@@ -5,9 +5,14 @@ from sqlalchemy.exc import SQLAlchemyError
 # 引入数据库连接引擎
 from app.database.connection import engine
 
+# 引入路由
+from app.api.v1.router import router as api_router
+
 app = FastAPI()
 
+app.include_router(api_router, prefix="/api/v1")
 
+# 数据库连接测试接口
 @app.get("/api/db-test")
 def test_database():
 
