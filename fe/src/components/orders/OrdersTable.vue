@@ -1,7 +1,7 @@
 <template>
   <div class="orders-table-wrap">
     <table class="orders-table">
-      <thead><tr><th class="select-column"><input v-model="allSelected" type="checkbox" :aria-label="t('orders.selectAll')" /></th><th>Order number</th><th>Payment time</th><th>Payment status</th><th>Payment method</th><th>Logitics status</th><th>Total amout</th><th>Number of products</th><th>Country/Region</th><th>Operation</th></tr></thead>
+      <thead><tr><th class="select-column"><input v-model="allSelected" type="checkbox" :aria-label="t('orders.selectAll')" /></th><th>Order number</th><th :aria-sort="sortDirection === 'asc' ? 'ascending' : 'descending'"><button class="sort-heading" type="button" :aria-label="`Sort by payment time ${sortDirection === 'desc' ? 'ascending' : 'descending'}`" @click="toggleSort">Payment time<span class="sort-arrows" aria-hidden="true"><span :class="{ active: sortDirection === 'asc' }">▲</span><span :class="{ active: sortDirection === 'desc' }">▼</span></span></button></th><th>Payment status</th><th>Payment method</th><th>Logitics status</th><th>Total amout</th><th>Number of products</th><th>Country/Region</th><th>Operation</th></tr></thead>
       <tbody><tr v-for="order in visibleOrders" :key="order.number"><td><input v-model="selectedOrderNumbers" :value="order.number" :aria-label="t('orders.select') + ' ' + order.number" type="checkbox" /></td><td><button class="order-number" type="button">{{ order.number }}</button></td><td>{{ order.paymentTime }}</td><td>{{ order.paymentStatus }}</td><td>{{ order.paymentMethod }}</td><td>{{ order.logisticsStatus }}</td><td>{{ order.totalAmount }}</td><td>{{ order.productCount }}</td><td>{{ order.countryRegion }}</td><td>{{ order.operation }}</td></tr></tbody>
     </table>
     <p v-if="visibleOrders.length === 0" class="empty-state">{{ t('orders.empty') }}</p>
@@ -12,7 +12,7 @@
 import { computed, ref } from 'vue'
 import { t } from '../../stores/locale'
 type Order = { number: string; paymentTime: string; paymentStatus: string; paymentMethod: string; logisticsStatus: string; totalAmount: string; productCount: number; countryRegion: string; operation: string }
-const props = defineProps<{ query: string; countryRegion: string; paymentMethod: string; paymentStatus: string }>()
+const props = defineProps<{ query: string; paymentMethod: string; paymentStatus: string }>()
 const orders: Order[] = [
   { number: '#D11', paymentTime: '2026-11-17 04:45', paymentStatus: 'Paid', paymentMethod: 'Credit card', logisticsStatus: 'Unfulfilled', totalAmount: '$150.00', productCount: 1, countryRegion: 'United States', operation: 'View' },
   { number: '#D10', paymentTime: '2026-11-17 02:17', paymentStatus: 'Paid', paymentMethod: 'PayPal', logisticsStatus: 'Unfulfilled', totalAmount: '$693.45', productCount: 3, countryRegion: 'Canada', operation: 'View' },
@@ -27,20 +27,25 @@ const orders: Order[] = [
   { number: '#D1', paymentTime: '2026-11-15 10:36', paymentStatus: 'Paid', paymentMethod: 'Shop Pay', logisticsStatus: 'Unfulfilled', totalAmount: '$200.00', productCount: 1, countryRegion: 'Canada', operation: 'View' },
 ]
 const selectedOrderNumbers = ref<string[]>([])
+const sortDirection = ref<'asc' | 'desc'>('desc')
 const visibleOrders = computed(() => {
   const keyword = props.query.trim().toLowerCase()
   const status = props.paymentStatus.trim().toLowerCase()
   return orders.filter((order) => {
     const matchesKeyword = !keyword || Object.values(order).some((value) => String(value).toLowerCase().includes(keyword))
-    const matchesCountry = !props.countryRegion || order.countryRegion === props.countryRegion
     const matchesMethod = !props.paymentMethod || order.paymentMethod === props.paymentMethod
     const matchesStatus = !status || order.paymentStatus.toLowerCase().includes(status)
-    return matchesKeyword && matchesCountry && matchesMethod && matchesStatus
-  })
+    return matchesKeyword && matchesMethod && matchesStatus
+  }).sort((left, right) => sortDirection.value === 'desc'
+    ? right.paymentTime.localeCompare(left.paymentTime)
+    : left.paymentTime.localeCompare(right.paymentTime))
 })
+function toggleSort() {
+  sortDirection.value = sortDirection.value === 'desc' ? 'asc' : 'desc'
+}
 const allSelected = computed({ get: () => visibleOrders.value.length > 0 && visibleOrders.value.every((order) => selectedOrderNumbers.value.includes(order.number)), set: (checked: boolean) => { selectedOrderNumbers.value = checked ? visibleOrders.value.map((order) => order.number) : [] } })
 </script>
 
 <style scoped>
-.orders-table-wrap { min-height: 0; overflow: auto; }.orders-table { width: 100%; min-width: 1440px; border-spacing: 0; border-collapse: separate; font-size: 15px; }.orders-table th { height: 39px; padding: 0 15px; color: #333; font-weight: 500; text-align: left; white-space: nowrap; background: #f5f5f5; }.orders-table th:first-child { border-radius: 13px 0 0 13px; }.orders-table th:last-child { border-radius: 0 13px 13px 0; }.orders-table td { height: 41px; padding: 0 15px; color: #151515; white-space: nowrap; border-bottom: 1px solid #ececec; }.orders-table tbody tr:last-child td { border-bottom: 0; }.select-column { width: 36px; }.orders-table input { appearance: none; width: 20px; height: 20px; vertical-align: middle; background: white; border: 1px solid #c4c4c4; border-radius: 6px; }.orders-table input:checked { background: #111; border-color: #111; box-shadow: inset 0 0 0 5px white; }.order-number { padding: 0; color: #111; font-weight: 600; background: transparent; border: 0; }.order-number:hover { text-decoration: underline; }.empty-state { padding: 54px; color: #666; text-align: center; }
+.orders-table-wrap { min-height: 0; overflow: auto; }.orders-table { width: 100%; min-width: 1440px; border-spacing: 0; border-collapse: separate; font-size: 15px; }.orders-table th { height: 39px; padding: 0 15px; color: #333; font-weight: 500; text-align: left; white-space: nowrap; background: #f5f5f5; }.orders-table th:first-child { border-radius: 13px 0 0 13px; }.orders-table th:last-child { border-radius: 0 13px 13px 0; }.orders-table td { height: 41px; padding: 0 15px; color: #151515; white-space: nowrap; border-bottom: 1px solid #ececec; }.orders-table tbody tr:last-child td { border-bottom: 0; }.select-column { width: 36px; }.orders-table input { appearance: none; width: 20px; height: 20px; vertical-align: middle; background: white; border: 1px solid #c4c4c4; border-radius: 6px; }.orders-table input:checked { background: #111; border-color: #111; box-shadow: inset 0 0 0 5px white; }.sort-heading { display: inline-flex; align-items: center; gap: 6px; padding: 0; color: inherit; font: inherit; background: transparent; border: 0; cursor: pointer; }.sort-heading:focus-visible { outline: 2px solid #ff8733; outline-offset: 3px; border-radius: 2px; }.sort-arrows { display: inline-flex; flex-direction: column; color: #b8b8b8; font-size: 9px; line-height: 8px; }.sort-arrows .active { color: #f58232; }.order-number { padding: 0; color: #111; font-weight: 600; background: transparent; border: 0; }.order-number:hover { text-decoration: underline; }.empty-state { padding: 54px; color: #666; text-align: center; }
 </style>

@@ -7,17 +7,7 @@
       <AppIcon class="calendar-icon" name="calendar" :size="15" />
     </div>
 
-    <div ref="countryFilter" class="select-filter">
-      <button class="filter-field select-field" type="button" aria-haspopup="listbox" :aria-expanded="countryRegionOpen" @click="countryRegionOpen = !countryRegionOpen">
-        <span :class="{ 'is-placeholder': !countryRegion }">{{ countryRegion || 'Country/Region' }}</span>
-        <AppIcon class="select-chevron" name="chevron-down" :size="18" />
-      </button>
-      <div v-if="countryRegionOpen" class="select-menu" role="listbox" aria-label="Country or region">
-        <button v-for="country in countries" :key="country" class="select-option" :class="{ 'is-selected': countryRegion === country }" type="button" role="option" :aria-selected="countryRegion === country" @click="selectCountryRegion(country)">
-          {{ country }}
-        </button>
-      </div>
-    </div>
+    <div class="filter-field country-field">Country/Region</div>
 
     <div ref="methodFilter" class="select-filter">
       <button class="filter-field select-field" type="button" aria-haspopup="listbox" :aria-expanded="paymentMethodOpen" @click="paymentMethodOpen = !paymentMethodOpen">
@@ -32,7 +22,7 @@
     </div>
 
     <label class="filter-field status-field">
-      <input v-model="paymentStatus" type="search" placeholder="Payment status" aria-label="Payment status" />
+      <input v-model="paymentStatus" type="search" placeholder="Domain" aria-label="Domain" />
     </label>
 
     <div class="search-field filter-field">
@@ -49,39 +39,28 @@ import AppIcon from '../ui/AppIcon.vue'
 import { t } from '../../stores/locale'
 
 const query = defineModel<string>('query', { required: true })
-const countryRegion = defineModel<string>('countryRegion', { required: true })
 const paymentMethod = defineModel<string>('paymentMethod', { required: true })
 const paymentStatus = defineModel<string>('paymentStatus', { required: true })
 const draftQuery = ref(query.value)
 const paymentMethodOpen = ref(false)
-const countryRegionOpen = ref(false)
 const methodFilter = ref<HTMLElement | null>(null)
-const countryFilter = ref<HTMLElement | null>(null)
 const paymentMethods = ['Credit card', 'PayPal', 'Shop Pay']
-const countries = ['United States', 'Canada', 'United Kingdom', 'Australia', 'Germany', 'France', 'Japan', 'Singapore']
 
 watch(query, (value) => { draftQuery.value = value })
 
 function closeSelectMenus(event: PointerEvent) {
   if (event.target instanceof Node && !methodFilter.value?.contains(event.target)) paymentMethodOpen.value = false
-  if (event.target instanceof Node && !countryFilter.value?.contains(event.target)) countryRegionOpen.value = false
 }
 
 function handleMenuKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape') {
     paymentMethodOpen.value = false
-    countryRegionOpen.value = false
   }
 }
 
 function selectPaymentMethod(method: string) {
   paymentMethod.value = method
   paymentMethodOpen.value = false
-}
-
-function selectCountryRegion(country: string) {
-  countryRegion.value = country
-  countryRegionOpen.value = false
 }
 
 onMounted(() => {
