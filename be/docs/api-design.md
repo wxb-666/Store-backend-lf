@@ -225,9 +225,9 @@ HTTP 状态码：`200 OK`
         "product_id": 101,
         "product_name": "Classic T-Shirt",
         "product_sku": "TSHIRT-001",
-        "product_image": "https://example.com/image.jpg",
-        "unit_price": "150.00",
-        "quantity": 1
+        "product_number": 1,
+        "specifications": "XL * 1",
+        "product_image": "https://example.com/image.jpg"
       }
     ]
   }
@@ -281,15 +281,15 @@ HTTP 状态码：`200 OK`
 
 (5) 订单商品明细 `order_items`
 
-| 字段名        | 类型        | 说明                 |
-|---------------|-------------|----------------------|
-| id            | integer     | 订单明细 ID          |
-| product_id    | integer     | 商品 ID              |
-| product_name  | string      | 下单时的商品名称     |
-| product_sku   | string      | 下单时的商品 SKU     |
-| product_image | string/null | 下单时的商品图片地址 |
-| unit_price    | string      | 下单时的商品单价     |
-| quantity      | integer     | 购买数量             |
+| 字段名            | 类型        | 说明        |
+|----------------|-------------|-----------|
+| id             | integer     | 订单明细 ID   |
+| product_id     | integer     | 商品 ID     |
+| product_name   | string      | 下单时的商品名称  |
+| product_sku    | string      | 下单时的商品 SKU |
+| product_image  | string/null | 下单时的商品图片地址 |
+| product_number | integer     | 购买数量      |
+| specifications | string/null | 商品规格      |
 
 ## 4. 错误响应
 

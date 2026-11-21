@@ -17,6 +17,5 @@ class OrderDetailProductResponse(BaseModel):
     product_name: str 
     product_number: int
     product_sku: str
+    specifications: str | None = None
     product_image: str | None = None
-    unit_price: str  # 商品单价，但店铺后台不显示
-    quantity: int    # 商品数量，在本订单中的数量
