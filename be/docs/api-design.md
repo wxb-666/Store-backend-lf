@@ -159,23 +159,24 @@ HTTP 状态码：`200 OK`
 
 #### 3.2.1 接口信息
 
-| 项目     | 说明                                                                     |
-|----------|--------------------------------------------------------------------------|
-| 接口名称 | 获取订单详情                                                             |
-| 请求方式 | GET                                                                      |
-| 接口地址 | `/api/v1/orders/{order_id}`                                              |
-| 功能说明 | 根据订单 ID 获取订单基本信息、支付信息、客户信息、物流信息及订单商品明细 |
+| 项目   | 说明                                                     |
+|------|--------------------------------------------------------|
+| 接口名称 | 获取订单详情                                                 |
+| 请求方式 | GET                                                    |
+| 接口地址 | `/api/v1/stores/orders/{order_number}?domain={domain}` |
+| 功能说明 | 根据订单 ID 获取订单基本信息、支付信息、客户信息、物流信息及订单商品明细                 |
 
 #### 3.2.2 请求参数
 
-| 参数名   | 类型    | 是否必填 | 说明      |
-|----------|---------|----------|-----------|
+| 参数名      | 类型      | 是否必填 | 说明     |
+|----------|---------|----------|--------|
 | order_id | integer | 是       | 订单表 ID |
+| domain   | string  | 是       | 店铺域名   |
 
 示例请求：
 
 ```http
-GET /api/v1/orders/11034
+GET /api/v1/orders/11034?domain=pawsneedus.com
 ```
 
 #### 3.2.3 成功响应
@@ -190,6 +191,7 @@ HTTP 状态码：`200 OK`
     "order_info": {
       "order_id": 11034,
       "order_number": "53956M100016",
+      "domain": "pawsneedus.com",
       "order_status": "Completed",
       "generation_time": "2026-11-17 04:30:00",
       "total_amount": "150.00",
@@ -236,14 +238,15 @@ HTTP 状态码：`200 OK`
 
 (1) 订单信息 `order_info`
 
-| 字段名             | 类型    | 说明           |
-|--------------------|---------|----------------|
-| order_id           | integer | 订单数据库 ID  |
-| order_number       | string  | 订单编号       |
-| order_status       | string  | 订单状态       |
+| 字段名                | 类型    | 说明       |
+|--------------------|---------|----------|
+| order_id           | integer | 订单数据库 ID |
+| order_number       | string  | 订单编号     |
+| domain             | string  | 店铺域名     |
+| order_status       | string  | 订单状态     |
 | generation_time    | string  | 订单创建时间   |
-| total_amount       | string  | 订单总金额     |
-| number_of_products | integer | 订单商品总件数 |
+| total_amount       | string  | 订单总金额    |
+| number_of_products | integer | 订单商品总件数  |
 
 (2) 支付信息 `payment_info`
 

@@ -5,7 +5,7 @@
 | 字段名                   | 字段类型          | 字段描述              |
 |-----------------------|---------------|-------------------|
 | order_id              | BIGINT        | 订单id，主键，订单表中的唯一标识  |
-| order_number          | VARCHAR(64) UNIQUE   | 订单编号           |
+| order_number          | VARCHAR(64)   | 订单编号           |
 | order_status          | VARCHAR(32)   | 订单状态              |
 | generation_time       | DATETIME      | 订单生成时间            |
 | payment_time          | DATETIME      | 订单支付时间            |
@@ -35,7 +35,7 @@
 |----------------|---------------|-----------------|
 | product_id     | BIGINT        | 商品id，主键，商品表中的唯一标识  |
 | domain         | VARCHAR(64)   | 域名                |
-| product_sku    | VARCHAR(64)  UNIQUE | 商品sku     |
+| product_sku    | VARCHAR(64)   | 商品sku     |
 | product_name   | VARCHAR(255)  | 商品名             |
 | product_slug   | VARCHAR(255)  | 商品slug          |
 | product_price  | DECIMAL(12,2) | 商品金额          |
