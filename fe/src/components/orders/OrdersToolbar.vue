@@ -15,8 +15,8 @@
         <AppIcon class="select-chevron" name="chevron-down" :size="18" />
       </button>
       <div v-if="paymentMethodOpen" class="select-menu" role="listbox" aria-label="Payment method">
-        <button v-for="method in paymentMethods" :key="method" class="select-option" :class="{ 'is-selected': paymentMethod === method }" type="button" role="option" :aria-selected="paymentMethod === method" @click="selectPaymentMethod(method)">
-          {{ method }}
+        <button v-for="option in paymentMethodOptions" :key="option.value || 'all'" class="select-option" :class="{ 'is-selected': paymentMethod === option.value }" type="button" role="option" :aria-selected="paymentMethod === option.value" @click="selectPaymentMethod(option.value)">
+          {{ option.label }}
         </button>
       </div>
     </div>
@@ -44,7 +44,12 @@ const domain = defineModel<string>('domain', { required: true })
 const draftQuery = ref(query.value)
 const paymentMethodOpen = ref(false)
 const methodFilter = ref<HTMLElement | null>(null)
-const paymentMethods = ['Credit card', 'PayPal', 'Shop Pay']
+const paymentMethodOptions = [
+  { label: 'Credit card', value: 'Credit card' },
+  { label: 'PayPal', value: 'PayPal' },
+  { label: 'Shop Pay', value: 'Shop Pay' },
+  { label: 'All', value: '' },
+]
 
 watch(query, (value) => { draftQuery.value = value })
 
@@ -90,13 +95,14 @@ function submitSearch() {
 .select-filter { position: relative; min-width: 0; }
 .select-field { width: 100%; justify-content: space-between; gap: 10px; border-radius: 5px; text-align: left; cursor: pointer; }
 .select-field > span { overflow: hidden; color: #555; font-size: inherit; text-overflow: ellipsis; white-space: nowrap; }
+.select-field > span:not(.is-placeholder) { color: #000; }
 .select-field > span.is-placeholder { color: #555; }
 .select-chevron { flex: 0 0 auto; color: #777; }
 .select-menu { position: absolute; z-index: 20; top: calc(100% + 6px); right: 0; left: 0; display: grid; gap: 2px; padding: 5px; background: #fff; border: 1px solid #e2e2e2; border-radius: 8px; box-shadow: 0 6px 18px rgb(0 0 0 / 12%); }
 .select-option { min-height: 36px; padding: 0 10px; color: #333; font: inherit; text-align: left; background: transparent; border: 0; border-radius: 5px; cursor: pointer; }
 .select-option:hover, .select-option.is-selected { background: #f2f2f2; }
 .select-option.is-selected { font-weight: 600; }
-.filter-field > input { width: 100%; min-width: 0; height: 100%; padding: 0; color: #555; font: inherit; background: transparent; border: 0; outline: 0; }
+.filter-field > input { width: 100%; min-width: 0; height: 100%; padding: 0; color: #000; font: inherit; background: transparent; border: 0; outline: 0; }
 .filter-field > input::placeholder { color: #555; opacity: 1; }
 .search-field { gap: 9px; padding-right: 5px; color: #555; }
 .search-field input { flex: 1; }

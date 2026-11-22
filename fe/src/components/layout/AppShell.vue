@@ -1,6 +1,6 @@
 <template>
   <div class="app-shell">
-    <AppSidebar @navigate="emit('navigate', $event)" />
+    <AppSidebar />
     <main class="app-shell__content"><slot /></main>
   </div>
 </template>
@@ -8,7 +8,6 @@
 <script setup lang="ts">
 import AppSidebar from './AppSidebar.vue'
 
-const emit = defineEmits<{ navigate: [view: 'dashboard' | 'orders'] }>()
 </script>
 
 <style scoped>
