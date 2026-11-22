@@ -13,15 +13,15 @@ class OrderListResponse(BaseModel):
     payment_time: datetime | None
     payment_status: str | None
     payment_method: str | None
-    logistics_status: str
+    logistics_status: str | None
     total_amount: Decimal
     currency_code: str
     number_of_products: int
 
     product_items: list[OrderListProductResponse]  # 使用导入的 OrderListProductResponse 模型
 
-    domain: str
-    country_region: str
+    domain: str | None
+    country_region: str | None
 
 class OrderListDataResponse(BaseModel):
     # 订单列表 api 的 data 字段响应数据模型

@@ -16,6 +16,12 @@ SORT_COLUMNS = {
     "order_number": Order.order_number,
 }
 
+PAYMENT_METHOD_ALIASES = {
+    "credit card": ("credit card", "credit_card"),
+    "paypal": ("paypal", "paypal_rest", "paypal_express"),
+    "shop pay": ("shop pay", "shop_pay"),
+}
+
 
 # 获取订单列表
 def get_order_list(
@@ -52,7 +58,13 @@ def get_order_list(
         filters.append(Order.country_region == country_region)
 
     if payment_method:
-        filters.append(Order.payment_method == payment_method)
+        payment_method_values = PAYMENT_METHOD_ALIASES.get(
+            payment_method.strip().lower()
+        )
+        if payment_method_values:
+            filters.append(func.lower(Order.payment_method).in_(payment_method_values))
+        else:
+            filters.append(Order.payment_method == payment_method)
 
     if payment_status:
         filters.append(Order.payment_status == payment_status)
@@ -67,10 +79,12 @@ def get_order_list(
             .select_from(OrderItem)
             .join(
                 Product,
-                OrderItem.product_sku == Product.product_sku
+                (OrderItem.product_sku == Product.product_sku)
+                & (OrderItem.domain == Product.domain)
             )
             .where(
                 OrderItem.order_number == Order.order_number,
+                OrderItem.domain == Order.domain,
                 Product.product_slug.is_not(None),
                 Product.product_slug.contains(q, autoescape=True)
             )
@@ -124,15 +138,19 @@ def get_order_list(
     product_items_map = {}
 
     if orders:
-        order_numbers = [order.order_number for order in orders]
+        order_keys = [(order.domain, order.order_number) for order in orders]
 
         item_statement = (
             select(OrderItem, Product)
             .join(
                 Product,
-                OrderItem.product_sku == Product.product_sku
+                (OrderItem.product_sku == Product.product_sku)
+                & (OrderItem.domain == Product.domain)
             )
-            .where(OrderItem.order_number.in_(order_numbers))
+            .where(or_(*[
+                (OrderItem.domain == domain) & (OrderItem.order_number == order_number)
+                for domain, order_number in order_keys
+            ]))
             .order_by(OrderItem.id.asc())
         )
 
@@ -141,7 +159,7 @@ def get_order_list(
         # 按订单编号整理商品明细
         for order_item, product in item_results:
             product_items_map.setdefault(
-                order_item.order_number,
+                (order_item.domain, order_item.order_number),
                 []
             ).append((order_item, product))
 

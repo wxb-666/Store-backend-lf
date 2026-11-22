@@ -51,7 +51,7 @@ def get_order_list_service(
     for order in orders:
 
         # 获取当前订单对应的商品明细
-        order_items = product_items_map.get(order.order_number, [])
+        order_items = product_items_map.get((order.domain, order.order_number), [])[:3]
 
         # 整理当前订单的商品信息
         product_list = []

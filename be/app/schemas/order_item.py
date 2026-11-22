@@ -7,7 +7,7 @@ class OrderListProductResponse(BaseModel):
     product_name: str
     product_number: int
     product_sku: str
-    product_image: str
+    product_image: str | None = None
 
 class OrderDetailProductResponse(BaseModel):
     # 订单详情中的商品信息

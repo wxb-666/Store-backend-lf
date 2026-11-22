@@ -22,7 +22,7 @@
     </div>
 
     <label class="filter-field status-field">
-      <input v-model="paymentStatus" type="search" placeholder="Domain" aria-label="Domain" />
+      <input v-model="domain" type="search" placeholder="Domain" aria-label="Domain" />
     </label>
 
     <div class="search-field filter-field">
@@ -40,7 +40,7 @@ import { t } from '../../stores/locale'
 
 const query = defineModel<string>('query', { required: true })
 const paymentMethod = defineModel<string>('paymentMethod', { required: true })
-const paymentStatus = defineModel<string>('paymentStatus', { required: true })
+const domain = defineModel<string>('domain', { required: true })
 const draftQuery = ref(query.value)
 const paymentMethodOpen = ref(false)
 const methodFilter = ref<HTMLElement | null>(null)
