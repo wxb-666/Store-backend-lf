@@ -22,7 +22,7 @@
     </div>
 
     <label class="filter-field status-field">
-      <input v-model="domain" type="search" placeholder="Domain" aria-label="Domain" />
+      <input v-model="domain" type="search" placeholder="Payment status" aria-label="Payment status" />
     </label>
 
     <div class="search-field filter-field">
