@@ -16,7 +16,7 @@
       <tbody>
         <tr v-for="order in orders" :key="order.order_id">
           <td><input v-model="selectedOrderIds" :value="order.order_id" :aria-label="`${t('orders.select')} ${order.order_number}`" type="checkbox" /></td>
-          <td><button class="order-number" type="button">{{ order.order_number }}</button></td>
+          <td><button class="order-number" type="button" @click="openOrder(order)">{{ order.order_number }}</button></td>
           <td>{{ formatDate(order.payment_time) }}</td>
           <td><span class="status-value" :class="statusClass(order.payment_status)">{{ formatStatus(order.payment_status) }}</span></td>
           <td>{{ formatStatus(order.payment_method) }}</td>
@@ -53,7 +53,7 @@
             </div>
           </td>
           <td>{{ order.country_region || '—' }}</td>
-          <td><button class="operation-button" type="button">View</button></td>
+          <td><button class="operation-button" type="button" @click="openOrder(order)">View</button></td>
         </tr>
       </tbody>
     </table>
@@ -107,10 +107,12 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { fetchOrders, type OrderListItem } from '../../api/orders'
 import { t } from '../../stores/locale'
 
 const props = defineProps<{ query: string; paymentMethod: string; domain: string }>()
+const router = useRouter()
 const orders = ref<OrderListItem[]>([])
 const selectedOrderIds = ref<number[]>([])
 const sortDirection = ref<'asc' | 'desc'>('desc')
@@ -171,6 +173,13 @@ async function loadOrders() {
 }
 
 function toggleSort() { sortDirection.value = sortDirection.value === 'desc' ? 'asc' : 'desc' }
+function openOrder(order: OrderListItem) {
+  if (!order.domain) {
+    errorMessage.value = 'This order is missing its store domain and cannot be opened.'
+    return
+  }
+  void router.push({ name: 'orderDetail', params: { orderId: order.order_id }, query: { domain: order.domain } })
+}
 function toggleProductDetails(order: OrderListItem, event: MouseEvent) {
   if (activeProductOrderId.value === order.order_id) {
     activeProductOrderId.value = null
