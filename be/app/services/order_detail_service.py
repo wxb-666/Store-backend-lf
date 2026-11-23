@@ -47,6 +47,7 @@ def get_order_detail_service(
             product_name=product.product_name,
             product_number=order_item.product_number,
             product_sku=product.product_sku,
+            product_price=product.product_price,
             specifications=product.specifications,
             product_image=product.product_image,
         )
@@ -62,6 +63,7 @@ def get_order_detail_service(
             order_status=order.order_status,
             generation_time=order.generation_time,
             total_amount=order.total_amount,
+            currency_code=order.currency_code,
             number_of_products=order.number_of_products,
         ),
         payment_info=OrderDetailPaymentInfoResponse(

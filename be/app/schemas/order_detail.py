@@ -15,6 +15,7 @@ class OrderDetailOrderInfoResponse(BaseModel):
     order_status: str
     generation_time: datetime
     total_amount: Decimal
+    currency_code: str
     number_of_products: int
 
 
