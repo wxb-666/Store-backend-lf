@@ -1,6 +1,10 @@
 <template>
   <AppShell>
-    <RouterView />
+    <RouterView v-slot="{ Component }">
+      <KeepAlive include="OrdersView">
+        <component :is="Component" />
+      </KeepAlive>
+    </RouterView>
   </AppShell>
 </template>
 
