@@ -59,7 +59,7 @@ const handleOrderSelect = (label: string) => {
 <style scoped>
 .sidebar { display: flex; flex: 0 0 250px; flex-direction: column; min-width: 0; height: 100%; padding: 20px 16px 16px; color: #b8b8b8; background: #0c0c0c; }
 .sidebar__top { display: flex; align-items: center; min-width: 0; height: 34px; gap: 12px; margin: 0 4px 24px; }
-.store-name { overflow: hidden; color: #f1f1f1; font-size: 15px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.store-name { overflow: hidden; color: #f1f1f1; font-size: 20px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .icon-button { display: inline-grid; padding: 6px; color: inherit; background: transparent; border: 0; border-radius: 7px; place-items: center; }
 .icon-button:hover { color: white; background: #2a2a2a; }
 .search-trigger { display: flex; align-items: center; width: 100%; height: 36px; gap: 9px; padding: 0 11px; margin-bottom: 18px; color: #bebebe; text-align: left; background: #303030; border: 0; border-radius: 12px; }.search-trigger span { flex: 1; font-size: 14px; }.search-trigger kbd { color: #bbb; font: inherit; font-size: 13px; }
