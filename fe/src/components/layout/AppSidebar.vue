@@ -21,7 +21,7 @@
           </label>
         </Transition>
       </div>
-      <div class="account"><span class="account__avatar">SUP</span><strong>support</strong><span class="account__badge">dev</span><button class="icon-button account__bell" type="button" :aria-label="t('common.notifications')"><AppIcon name="bell" :size="19" /></button></div>
+      <div class="account"><span class="account__avatar">SUP</span><strong>support</strong><button class="icon-button account__bell" type="button" :aria-label="t('common.notifications')"><AppIcon name="bell" :size="19" /></button></div>
     </div>
   </aside>
 </template>
