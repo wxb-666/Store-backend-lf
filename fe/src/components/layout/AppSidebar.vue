@@ -1,7 +1,6 @@
 <template>
   <aside class="sidebar">
     <div class="sidebar__top">
-      <div class="shopify-mark" aria-label="Shopify">S</div>
       <span v-if="storeName" class="store-name" :title="storeName">{{ storeName }}</span>
     </div>
     <button class="search-trigger" type="button" :aria-label="t('common.search')"><AppIcon name="search" :size="19" /><span>{{ t('common.search') }}</span><kbd>Ctrl K</kbd></button>
