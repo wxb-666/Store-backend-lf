@@ -29,7 +29,7 @@
 | domain                | VARCHAR(64)   | 域名                |
 | number_of_products    | INT UNSIGNED  | 订单包含的商品总件数        |
 
-## 商品表（Product）
+## 商品表（Product_sku）
 
 | 字段名            | 字段类型          | 字段描述            |
 |----------------|---------------|-----------------|
@@ -38,9 +38,20 @@
 | product_sku    | VARCHAR(64)   | 商品sku     |
 | product_name   | VARCHAR(255)  | 商品名             |
 | product_slug   | VARCHAR(255)  | 商品slug          |
+| specifications | VARCHAR(255)  | 商品规格          |
+| product_image  | VARCHAR(2048) | 商品图片链接      |
+
+## 商品表（Product_spu）
+
+| 字段名            | 字段类型          | 字段描述            |
+|----------------|---------------|-----------------|
+| product_id     | BIGINT        | 商品id，主键，商品表中的唯一标识  |
+| domain         | VARCHAR(64)   | 域名                |
+| product_spu    | VARCHAR(64)   | 商品spu     |
+| product_name   | VARCHAR(255)  | 商品名             |
+| product_slug   | VARCHAR(255)  | 商品slug          |
 | product_price  | DECIMAL(12,2) | 商品金额          |
 | product_stock  | INT UNSIGNED  | 商品库存          |
-| specifications | VARCHAR(255)  | 商品规格          |
 | product_image  | VARCHAR(2048) | 商品图片链接      |
 
 ## 商品标签表（Product_tag）
@@ -65,6 +76,6 @@
 | 字段名            | 字段类型        | 字段描述            |
 |----------------|-------------|-----------------|
 | id             | BIGINT      | id，主键，关联表中的唯一标识  |
-| product_id     | BIGINT      | 商品id     |
+| product_id     | BIGINT      | 商品spu表id     |
 | tag_id         | BIGINT      | 标签id   |
 
