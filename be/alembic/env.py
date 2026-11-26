@@ -9,6 +9,7 @@ from app.database.connection import Base, engine, DATABASE_URL
 from app.models.order import Order
 from app.models.order_item import OrderItem
 from app.models.product import Product
+from app.models.product_spu import ProductSpu
 from app.models.product_tag import ProductTag
 from app.models.product_tag_relation import ProductTagRelation
 

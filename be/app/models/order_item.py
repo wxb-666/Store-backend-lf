@@ -1,7 +1,7 @@
+
 from sqlalchemy import (
     BigInteger,
     String,
-    ForeignKey,
     ForeignKeyConstraint,
     UniqueConstraint,
 )
@@ -32,10 +32,10 @@ class OrderItem(Base):
             name="fk_order_item_order"
         ),
 
-        # domain + product_sku 联合外键，关联商品表
+        # domain + product_sku 联合外键，关联 SKU 商品表
         ForeignKeyConstraint(
             ["domain", "product_sku"],
-            ["products.domain", "products.product_sku"],
+            ["products_sku.domain", "products_sku.product_sku"],
             name="fk_order_item_product"
         ),
     )
