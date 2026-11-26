@@ -71,6 +71,12 @@ class ProductSpu(Base):
         comment="商品金额"
     )
 
+    currency_code: Mapped[str] = mapped_column(
+        String(3),
+        nullable=False,
+        comment="货币代码"
+    )
+
     # 商品库存
     product_stock: Mapped[int] = mapped_column(
         INTEGER(unsigned=True),
