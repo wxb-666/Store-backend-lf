@@ -42,7 +42,6 @@ export interface OrderDetailProduct {
   product_name: string
   product_number: number
   product_sku: string
-  product_price: string
   specifications: string | null
   product_image: string | null
 }
