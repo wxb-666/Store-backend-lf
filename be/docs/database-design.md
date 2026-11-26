@@ -36,6 +36,7 @@
 | product_id     | BIGINT        | 商品id，主键，商品表中的唯一标识  |
 | domain         | VARCHAR(64)   | 域名                |
 | product_sku    | VARCHAR(64)   | 商品sku     |
+| product_spu    | VARCHAR(64)   | 商品spu     |
 | product_name   | VARCHAR(255)  | 商品名             |
 | product_slug   | VARCHAR(255)  | 商品slug          |
 | specifications | VARCHAR(255)  | 商品规格          |
