@@ -1,5 +1,3 @@
-from decimal import Decimal
-
 from pydantic import BaseModel
 
 class OrderListProductResponse(BaseModel):
@@ -19,6 +17,5 @@ class OrderDetailProductResponse(BaseModel):
     product_name: str 
     product_number: int
     product_sku: str
-    product_price: Decimal
     specifications: str | None = None
     product_image: str | None = None
