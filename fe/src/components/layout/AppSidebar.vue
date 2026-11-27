@@ -33,7 +33,15 @@ import SidebarGroup from './SidebarGroup.vue'
 import { t, type MessageKey } from '../../stores/locale'
 const route = useRoute()
 const router = useRouter()
-const activeItem = computed(() => route.path === '/home' ? 'home' : route.path.includes('orders') ? 'orders' : '')
+const activeItem = computed(() =>
+  route.path === '/home'
+    ? 'home'
+    : route.path.includes('orders')
+      ? 'orders'
+      : route.path.startsWith('/products')
+        ? 'products'
+        : ''
+)
 const activeOrderItem = computed(() => route.path === '/all_orders' ? 'all-orders' : route.path === '/abandoned_orders' ? 'abandoned-orders' : route.path === '/risk_orders' ? 'risk-orders' : '')
 const storeName = ref('')
 const showStoreNameInput = ref(false)
@@ -50,6 +58,7 @@ const afterOrderNavigation: NavigationItem[] = [{ id: 'products', labelKey: 'nav
 const handleSelect = (label: string) => {
   if (label === 'home') void router.push({ name: 'home' })
   if (label === 'orders') void router.push({ name: 'allOrders' })
+  if (label === 'products') void router.push({ name: 'productList' })
 }
 const handleOrderSelect = (label: string) => {
   if (label === 'all-orders') void router.push({ name: 'allOrders' })
