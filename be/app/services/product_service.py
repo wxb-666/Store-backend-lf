@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from decimal import Decimal
 from app.repositories.product_repository import get_product_list as get_product_list_repo
 
 from app.schemas.product import (
@@ -17,9 +17,10 @@ def get_product_list_service(
     page_size: int = 20,
     q: str | None = None,
     domain: str | None = None,
-    min_price: float | None = None,
-    max_price: float | None = None,
+    min_price: Decimal | None = None,
+    max_price: Decimal | None = None,
     tag_id: int | None = None,
+    is_listed: int | None = None,
 ) -> ProductListApiResponse:
 
     # 1. 调用 Repository 层，查询商品数据
@@ -32,6 +33,7 @@ def get_product_list_service(
         min_price=min_price,
         max_price=max_price,
         tag_id=tag_id,
+        is_listed=is_listed,
     )
 
     # 2. 整理当前页的商品数据
@@ -61,6 +63,7 @@ def get_product_list_service(
             product_price=str(product.product_price),
             currency_code=product.currency_code,
             product_stock=product.product_stock,
+            is_listed=product.is_listed,
             product_image=product.product_image,
             tags=tag_list,
         )

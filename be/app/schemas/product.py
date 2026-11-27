@@ -21,7 +21,8 @@ class ProductSpuListItemResponse(BaseModel):
     product_slug: str | None
     product_price: str
     currency_code: str
-    product_stock: int | None
+    product_stock: int
+    is_listed: int
     product_image: str | None
 
     # 当前 SPU 关联的全部标签

@@ -1,5 +1,6 @@
 
 from decimal import Decimal
+from typing import Literal
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
@@ -52,6 +53,11 @@ def get_product_list(
         default=None,
         description="商品标签 ID",
     ),
+
+    is_listed: int | None = Query(
+        default=None,
+        description="商品上架状态：1-上架，0-下架",
+    ),
 ):
     # 1. 校验价格范围
     if (
@@ -74,6 +80,7 @@ def get_product_list(
         min_price=min_price,
         max_price=max_price,
         tag_id=tag_id,
+        is_listed=is_listed,
     )
 
     # 3. 返回 API 响应

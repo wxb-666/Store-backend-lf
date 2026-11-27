@@ -19,6 +19,7 @@ def get_product_list(
     min_price: Decimal | None = None,
     max_price: Decimal | None = None,
     tag_id: int | None = None,
+    is_listed: int | None = None,
 ):
     # 1. 构建查询条件
     filters = []
@@ -70,6 +71,10 @@ def get_product_list(
         )
 
         filters.append(tag_exists)
+
+    # 商品上架状态筛选
+    if is_listed is not None:
+        filters.append(ProductSpu.is_listed == is_listed)
 
     # 2. 查询符合条件的商品总数
     count_statement = (
