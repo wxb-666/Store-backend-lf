@@ -324,9 +324,8 @@ HTTP 状态码：`200 OK`
 2. `q` 对 `product_name`、`product_slug`、`product_spu` 进行包含匹配，三者之间采用 OR 关系。
 3. `domain` 采用精确匹配，用于筛选指定店铺的商品。
 4. `min_price` 和 `max_price` 均针对 SPU 的 `product_price` 字段，边界值包含在结果内。
-5. 由于不同店铺的商品可能使用不同货币，传入 `min_price` 或 `max_price` 时必须同时传入 `currency_code`；货币代码与 SPU 的 `currency_code` 精确匹配。该接口不进行汇率换算。
-6. `tag_id` 用于筛选关联指定标签的 SPU。即使通过某个标签筛选，响应中的 `tags` 仍返回该商品关联的全部标签，而不只是本次筛选使用的标签。
-7. 默认按照 `product_id` 降序排列，保证分页结果具有稳定顺序。
+5. `tag_id` 用于筛选关联指定标签的 SPU。即使通过某个标签筛选，响应中的 `tags` 仍返回该商品关联的全部标签，而不只是本次筛选使用的标签。
+6. 默认按照 `product_id` 降序排列，保证分页结果具有稳定顺序。
 
 **参数校验：**
 
