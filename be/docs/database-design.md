@@ -13,7 +13,7 @@
 | payment_method        | VARCHAR(64)   | 支付方式                         |
 | payment_number        | VARCHAR(128)  | 支付流水号或第三方支付交易编号   |
 | total_amount          | DECIMAL(12,2) | 订单总金额                       |
-| currency_code         | DECIMAL(12,2) | 货币代码                         |
+| currency_code         | VARCHAR(3) | 货币代码                         |
 | logistic_order_number | VARCHAR(128)  | 物流单号                         |
 | logistics_status      | VARCHAR(32)   | 物流状态                         |
 | customer_name         | VARCHAR(128)  | 客户姓名或收件人姓名             |
@@ -52,6 +52,7 @@
 | product_name  | VARCHAR(255)     | 商品名                           |
 | product_slug  | VARCHAR(255)     | 商品slug                         |
 | product_price | DECIMAL(12,2)    | 商品金额                         |
+| currency_code | VARCHAR(3)       | 货币代码                         |
 | product_stock | INT UNSIGNED     | 商品库存                         |
 | is_listed     | TINYINT UNSIGNED | 上架状态：1-上架，0-下架         |
 | product_image | VARCHAR(2048)    | 商品图片链接                     |

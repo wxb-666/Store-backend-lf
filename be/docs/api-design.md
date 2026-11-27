@@ -238,15 +238,15 @@ HTTP 状态码：`200 OK`
 
 (1) 订单信息 `order_info`
 
-| 字段名                | 类型    | 说明       |
-|--------------------|---------|----------|
-| order_id           | integer | 订单数据库 ID |
-| order_number       | string  | 订单编号     |
-| domain             | string  | 店铺域名     |
-| order_status       | string  | 订单状态     |
+| 字段名             | 类型    | 说明           |
+|--------------------|---------|----------------|
+| order_id           | integer | 订单数据库 ID  |
+| order_number       | string  | 订单编号       |
+| domain             | string  | 店铺域名       |
+| order_status       | string  | 订单状态       |
 | generation_time    | string  | 订单创建时间   |
-| total_amount       | string  | 订单总金额    |
-| number_of_products | integer | 订单商品总件数  |
+| total_amount       | string  | 订单总金额     |
+| number_of_products | integer | 订单商品总件数 |
 
 (2) 支付信息 `payment_info`
 
@@ -281,15 +281,15 @@ HTTP 状态码：`200 OK`
 
 (5) 订单商品明细 `order_items`
 
-| 字段名            | 类型        | 说明        |
-|----------------|-------------|-----------|
-| id             | integer     | 订单明细 ID   |
-| product_id     | integer     | 商品 ID     |
-| product_name   | string      | 下单时的商品名称  |
-| product_sku    | string      | 下单时的商品 SKU |
+| 字段名         | 类型        | 说明                 |
+|----------------|-------------|----------------------|
+| id             | integer     | 订单明细 ID          |
+| product_id     | integer     | 商品 ID              |
+| product_name   | string      | 下单时的商品名称     |
+| product_sku    | string      | 下单时的商品 SKU     |
 | product_image  | string/null | 下单时的商品图片地址 |
-| product_number | integer     | 购买数量      |
-| specifications | string/null | 商品规格      |
+| product_number | integer     | 购买数量             |
+| specifications | string/null | 商品规格             |
 
 ## 4. 商品模块 API
 
@@ -317,6 +317,7 @@ HTTP 状态码：`200 OK`
 | min_price | decimal | 否       | -      | 最低价格，包含边界值                                                                                 |
 | max_price | decimal | 否       | -      | 最高价格，包含边界值                                                                                 |
 | tag_id    | integer | 否       | -      | 商品标签 ID；只返回关联了该标签的 SPU                                                                |
+| is_listed | integer | 否       | -      | 商品上架状态，不传则查询全部                                                                         |
 
 **筛选规则：**
 
@@ -334,6 +335,7 @@ HTTP 状态码：`200 OK`
 - `min_price`、`max_price` 必须大于或等于 0。
 - 同时传入 `min_price` 和 `max_price` 时，`min_price` 不得大于 `max_price`。
 - 根据金额范围筛选参数，默认只比较数值大小，无需看货币价值。
+- `is_listed` 必须为1或者0。
 
 示例请求：
 
@@ -381,6 +383,7 @@ HTTP 状态码：`200 OK`
         "product_price": "29.99",
         "currency_code": "USD",
         "product_stock": 100,
+        "is_listed":1,
         "product_image": "https://example.com/classic-t-shirt.jpg",
         "tags": [
           {
@@ -402,6 +405,7 @@ HTTP 状态码：`200 OK`
         "product_price": "59.99",
         "currency_code": "USD",
         "product_stock": 50,
+        "is_listed":0,
         "product_image": null,
         "tags": []
       }
@@ -433,6 +437,7 @@ HTTP 状态码：`200 OK`
 | product_price | string      | 商品金额                    |
 | currency_code | string      | 货币代码，例如 USD          |
 | product_stock | integer     | 商品库存                    |
+| is_listed     | integer     | 上架状态：1为上架，0为下架  |
 | product_image | string/null | 商品图片链接                |
 | tags          | array       | 当前 SPU 关联的全部商品标签 |
 
