@@ -291,9 +291,162 @@ HTTP 状态码：`200 OK`
 | product_number | integer     | 购买数量      |
 | specifications | string/null | 商品规格      |
 
-## 4. 错误响应
+## 4. 商品模块 API
 
-### 4.1 订单不存在
+### 4.1 获取商品列表
+
+#### 4.1.1 接口信息
+
+| 项目     | 说明                                                                                                                   |
+|----------|------------------------------------------------------------------------------------------------------------------------|
+| 接口名称 | 获取商品 SPU 列表                                                                                                      |
+| 请求方式 | GET                                                                                                                    |
+| 接口地址 | `/api/v1/products`                                                                                                     |
+| 功能说明 | 获取商品 SPU 列表，支持分页、关键词搜索、店铺域名、价格范围及商品标签筛选。每条商品记录同时返回该 SPU 关联的全部标签。 |
+
+#### 4.1.2 请求参数
+
+所有筛选参数均为 URL 查询参数，均为可选参数；分页参数不传时使用默认值。
+
+| 参数名    | 类型    | 是否必填 | 默认值 | 说明                                                                                                 |
+|-----------|---------|----------|--------|------------------------------------------------------------------------------------------------------|
+| page      | integer | 否       | 1      | 页码，从 1 开始                                                                                      |
+| page_size | integer | 否       | 20     | 每页记录数                                                                                           |
+| q         | string  | 否       | -      | 关键词，匹配商品名称 `product_name`、商品 Slug `product_slug` 或商品 SPU `product_spu`，采用包含匹配 |
+| domain    | string  | 否       | -      | 店铺域名，精确匹配 `products_spu.domain`                                                             |
+| min_price | decimal | 否       | -      | 最低价格，包含边界值                                                                                 |
+| max_price | decimal | 否       | -      | 最高价格，包含边界值                                                                                 |
+| tag_id    | integer | 否       | -      | 商品标签 ID；只返回关联了该标签的 SPU                                                                |
+
+**筛选规则：**
+
+1. 所有筛选条件之间采用 AND 关系；未传入的筛选条件不参与过滤。
+2. `q` 对 `product_name`、`product_slug`、`product_spu` 进行包含匹配，三者之间采用 OR 关系。
+3. `domain` 采用精确匹配，用于筛选指定店铺的商品。
+4. `min_price` 和 `max_price` 均针对 SPU 的 `product_price` 字段，边界值包含在结果内。
+5. 由于不同店铺的商品可能使用不同货币，传入 `min_price` 或 `max_price` 时必须同时传入 `currency_code`；货币代码与 SPU 的 `currency_code` 精确匹配。该接口不进行汇率换算。
+6. `tag_id` 用于筛选关联指定标签的 SPU。即使通过某个标签筛选，响应中的 `tags` 仍返回该商品关联的全部标签，而不只是本次筛选使用的标签。
+7. 默认按照 `product_id` 降序排列，保证分页结果具有稳定顺序。
+
+**参数校验：**
+
+- `page` 必须大于或等于 1。
+- `page_size` 必须大于或等于 1。
+- `min_price`、`max_price` 必须大于或等于 0。
+- 同时传入 `min_price` 和 `max_price` 时，`min_price` 不得大于 `max_price`。
+- 根据金额范围筛选参数，默认只比较数值大小，无需看货币价值。
+
+示例请求：
+
+```http
+# 获取全部商品（默认第一页，每页 20 条）
+GET /api/v1/products
+
+# 根据关键词搜索商品名称、Slug 或 SPU
+GET /api/v1/products?q=shirt
+
+# 筛选指定店铺的商品
+GET /api/v1/products?domain=pawsneedus.com
+
+# 筛选 USD 价格在 10 到 100 之间的商品
+GET /api/v1/products?min_price=10&max_price=100
+
+# 筛选指定标签的商品
+GET /api/v1/products?tag_id=3
+
+# 组合筛选
+GET /api/v1/products?page=1&page_size=20&q=shirt&domain=pawsneedus.com&min_price=10&max_price=100&tag_id=3
+```
+
+#### 4.1.3 成功响应
+
+HTTP 状态码：`200 OK`
+
+金额字段以字符串形式返回，避免浮点数精度问题。
+
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": {
+    "total": 2,
+    "page": 1,
+    "page_size": 20,
+    "items": [
+      {
+        "product_id": 101,
+        "domain": "pawsneedus.com",
+        "product_spu": "SPU-001",
+        "product_name": "Classic T-Shirt",
+        "product_slug": "classic-t-shirt",
+        "product_price": "29.99",
+        "currency_code": "USD",
+        "product_stock": 100,
+        "product_image": "https://example.com/classic-t-shirt.jpg",
+        "tags": [
+          {
+            "tag_id": 1,
+            "tag_name": "Clothing"
+          },
+          {
+            "tag_id": 3,
+            "tag_name": "Summer"
+          }
+        ]
+      },
+      {
+        "product_id": 102,
+        "domain": "pawsneedus.com",
+        "product_spu": "SPU-002",
+        "product_name": "Classic Hoodie",
+        "product_slug": null,
+        "product_price": "59.99",
+        "currency_code": "USD",
+        "product_stock": 50,
+        "product_image": null,
+        "tags": []
+      }
+    ]
+  }
+}
+```
+
+#### 4.1.4 响应字段说明
+
+**（1）分页信息**
+
+| 字段名    | 类型    | 说明                    |
+|-----------|---------|-------------------------|
+| total     | integer | 符合筛选条件的 SPU 总数 |
+| page      | integer | 当前页码                |
+| page_size | integer | 每页记录数              |
+| items     | array   | 当前页商品 SPU 列表     |
+
+**（2）商品 SPU 信息**
+
+| 字段名        | 类型        | 说明                        |
+|---------------|-------------|-----------------------------|
+| product_id    | integer     | SPU 数据库主键 ID           |
+| domain        | string      | 店铺域名                    |
+| product_spu   | string      | 商品 SPU 编码               |
+| product_name  | string      | 商品名称                    |
+| product_slug  | string/null | 商品 Slug                   |
+| product_price | string      | 商品金额                    |
+| currency_code | string      | 货币代码，例如 USD          |
+| product_stock | integer     | 商品库存                    |
+| product_image | string/null | 商品图片链接                |
+| tags          | array       | 当前 SPU 关联的全部商品标签 |
+
+**（3）商品标签信息 `tags[]`**
+
+| 字段名   | 类型    | 说明              |
+|----------|---------|-------------------|
+| tag_id   | integer | 标签数据库主键 ID |
+| tag_name | string  | 标签名称          |
+
+## 5. 错误响应
+
+### 5.1 订单不存在
 
 HTTP 状态码：`404 Not Found`
 
@@ -305,7 +458,7 @@ HTTP 状态码：`404 Not Found`
 }
 ```
 
-### 4.2 请求参数错误
+### 5.2 请求参数错误
 
 HTTP 状态码：`422 Unprocessable Entity`
 
@@ -317,7 +470,7 @@ HTTP 状态码：`422 Unprocessable Entity`
 }
 ```
 
-## 5. 数据查询说明
+## 6. 数据查询说明
 
 - 订单列表接口主要查询 `orders` 表。
 - 订单详情接口查询 `orders` 表，并通过订单明细关联 `order_items` 和 `products`，组装完整响应。
