@@ -7,7 +7,7 @@ from sqlalchemy import (
     Numeric,
     UniqueConstraint,
 )
-from sqlalchemy.dialects.mysql import INTEGER
+from sqlalchemy.dialects.mysql import INTEGER, TINYINT
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database.connection import Base
@@ -83,6 +83,15 @@ class ProductSpu(Base):
         nullable=False,
         default=0,
         comment="商品库存"
+    )
+
+    # 商品上架状态：1-上架，0-下架
+    is_listed: Mapped[int] = mapped_column(
+        TINYINT(unsigned=True),
+        nullable=False,
+        default=1,
+        server_default="1",
+        comment="上架状态：1-上架，0-下架"
     )
 
     # 商品图片
