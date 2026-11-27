@@ -1,26 +1,100 @@
+
 <template>
   <aside class="sidebar">
     <div class="sidebar__top">
-      <span v-if="storeName" class="store-name" :title="storeName">{{ storeName }}</span>
+      <span v-if="storeName" class="store-name" :title="storeName">
+        {{ storeName }}
+      </span>
     </div>
-    <button class="search-trigger" type="button" :aria-label="t('common.search')"><AppIcon name="search" :size="19" /><span>{{ t('common.search') }}</span><kbd>Ctrl K</kbd></button>
-    <nav class="sidebar__navigation" :aria-label="t('common.search')">
-      <SidebarGroup class="top-navigation" :items="topNavigation" :active-item="activeItem" @select="handleSelect" />
-      <SidebarGroup class="order-entry" :items="orderEntry" :active-item="activeItem" @select="handleSelect" />
-      <SidebarGroup v-if="activeItem === 'orders'" class="order-links" :items="orderNavigation" :active-item="activeOrderItem" @select="handleOrderSelect" />
-      <SidebarGroup class="after-order-navigation" :items="afterOrderNavigation" :active-item="activeItem" @select="handleSelect" />
+
+    <button
+      class="search-trigger"
+      type="button"
+      aria-label="Search"
+    >
+      <AppIcon name="search" :size="19" />
+      <span>Search</span>
+      <kbd>Ctrl K</kbd>
+    </button>
+
+    <nav class="sidebar__navigation" aria-label="Main navigation">
+      <SidebarGroup
+        class="top-navigation"
+        :items="topNavigation"
+        :active-item="activeItem"
+        @select="handleSelect"
+      />
+
+      <SidebarGroup
+        class="order-entry"
+        :items="orderEntry"
+        :active-item="activeItem"
+        @select="handleSelect"
+      />
+
+      <SidebarGroup
+        v-if="activeItem === 'orders'"
+        class="order-links"
+        :items="orderNavigation"
+        :active-item="activeOrderItem"
+        @select="handleOrderSelect"
+      />
+
+      <!-- Product 一级导航 -->
+      <SidebarGroup
+        class="product-entry"
+        :items="productEntry"
+        :active-item="activeItem"
+        @select="handleSelect"
+      />
+
+      <!-- Product 二级导航 -->
+      <SidebarGroup
+        v-if="activeItem === 'products'"
+        class="product-links"
+        :items="productNavigation"
+        :active-item="activeProductItem"
+        @select="handleProductSelect"
+      />
     </nav>
+
     <div class="sidebar__footer">
       <div class="settings-control">
-        <button class="nav-item" type="button" :aria-expanded="showStoreNameInput" @click="showStoreNameInput = !showStoreNameInput"><AppIcon name="settings" /><span>{{ t('settings.title') }}</span></button>
+        <button
+          class="nav-item"
+          type="button"
+          :aria-expanded="showStoreNameInput"
+          @click="showStoreNameInput = !showStoreNameInput"
+        >
+          <AppIcon name="settings" />
+          <span>Settings</span>
+        </button>
+
         <Transition name="store-name-panel">
           <label v-if="showStoreNameInput" class="store-name-input">
             <span>Store name</span>
-            <input v-model.trim="storeName" type="text" maxlength="40" placeholder="Enter store name" aria-label="Store name" />
+            <input
+              v-model.trim="storeName"
+              type="text"
+              maxlength="40"
+              placeholder="Enter store name"
+              aria-label="Store name"
+            />
           </label>
         </Transition>
       </div>
-      <div class="account"><span class="account__avatar">SUP</span><strong>support</strong><button class="icon-button account__bell" type="button" :aria-label="t('common.notifications')"><AppIcon name="bell" :size="19" /></button></div>
+
+      <div class="account">
+        <span class="account__avatar">SUP</span>
+        <strong>support</strong>
+        <button
+          class="icon-button account__bell"
+          type="button"
+          aria-label="Notifications"
+        >
+          <AppIcon name="bell" :size="19" />
+        </button>
+      </div>
     </div>
   </aside>
 </template>
@@ -30,9 +104,10 @@ import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppIcon, { type IconName } from '../ui/AppIcon.vue'
 import SidebarGroup from './SidebarGroup.vue'
-import { t, type MessageKey } from '../../stores/locale'
+
 const route = useRoute()
 const router = useRouter()
+
 const activeItem = computed(() =>
   route.path === '/home'
     ? 'home'
@@ -42,26 +117,102 @@ const activeItem = computed(() =>
         ? 'products'
         : ''
 )
-const activeOrderItem = computed(() => route.path === '/all_orders' ? 'all-orders' : route.path === '/abandoned_orders' ? 'abandoned-orders' : route.path === '/risk_orders' ? 'risk-orders' : '')
+
+const activeOrderItem = computed(() =>
+  route.path === '/all_orders'
+    ? 'all-orders'
+    : route.path === '/abandoned_orders'
+      ? 'abandoned-orders'
+      : route.path === '/risk_orders'
+        ? 'risk-orders'
+        : ''
+)
+
+const activeProductItem = computed(() => {
+  if (route.path === '/products') return 'product-list'
+  if (route.path === '/products/stock') return 'stock-list'
+  if (route.path === '/products/category') return 'products-category'
+  return ''
+})
+
 const storeName = ref('')
 const showStoreNameInput = ref(false)
-type NavigationItem = { id: string; labelKey: MessageKey; icon: IconName; disabled?: boolean }
-const topNavigation: NavigationItem[] = [{ id: 'home', labelKey: 'nav.home', icon: 'home' }]
-const orderEntry: NavigationItem[] = [{ id: 'orders', labelKey: 'nav.orders', icon: 'orders' }]
-const orderNavigation: NavigationItem[] = [
-  { id: 'all-orders', labelKey: 'nav.allOrders', icon: 'orders' },
-  { id: 'abandoned-orders', labelKey: 'nav.abandonedOrders', icon: 'orders', disabled: true },
-  { id: 'risk-orders', labelKey: 'nav.riskOrders', icon: 'orders', disabled: true },
+
+type NavigationItem = {
+  id: string
+  label: string
+  icon: IconName
+  disabled?: boolean
+}
+
+const topNavigation: NavigationItem[] = [
+  { id: 'home', label: 'Home', icon: 'home' },
 ]
-const afterOrderNavigation: NavigationItem[] = [{ id: 'products', labelKey: 'nav.products', icon: 'tag' }]
+
+const orderEntry: NavigationItem[] = [
+  { id: 'orders', label: 'Orders', icon: 'orders' },
+]
+
+const orderNavigation: NavigationItem[] = [
+  { id: 'all-orders', label: 'All orders', icon: 'orders' },
+  {
+    id: 'abandoned-orders',
+    label: 'Abandoned orders',
+    icon: 'orders',
+  },
+  {
+    id: 'risk-orders',
+    label: 'Risk orders',
+    icon: 'orders',
+  },
+]
+
+const productEntry: NavigationItem[] = [
+  { id: 'products', label: 'Products', icon: 'tag' },
+]
+
+const productNavigation: NavigationItem[] = [
+  { id: 'product-list', label: 'Product list', icon: 'tag' },
+  { id: 'stock-list', label: 'Stock list', icon: 'tag' },
+  {
+    id: 'products-category',
+    label: 'Products category',
+    icon: 'tag',
+  },
+]
 
 const handleSelect = (label: string) => {
-  if (label === 'home') void router.push({ name: 'home' })
-  if (label === 'orders') void router.push({ name: 'allOrders' })
-  if (label === 'products') void router.push({ name: 'productList' })
+  if (label === 'home') {
+    void router.push({ name: 'home' })
+  }
+
+  if (label === 'orders') {
+    void router.push({ name: 'allOrders' })
+  }
+
+  if (label === 'products') {
+    void router.push({ name: 'productList' })
+  }
 }
+
 const handleOrderSelect = (label: string) => {
-  if (label === 'all-orders') void router.push({ name: 'allOrders' })
+  if (label === 'all-orders') {
+    void router.push({ name: 'allOrders' })
+  }
+}
+
+const handleProductSelect = (label: string) => {
+  if (label === 'product-list') {
+    void router.push({ name: 'productList' })
+  }
+
+  if (label === 'stock-list') {
+    void router.push({ name: 'stockList' })
+  }
+
+  if (label === 'products-category') {
+    void router.push({ name: 'productsCategory' })
+  }
 }
 </script>
 
@@ -79,4 +230,20 @@ const handleOrderSelect = (label: string) => {
 .sidebar__navigation :deep(.nav-item:disabled) { color: #777; cursor: not-allowed; }
 .sidebar__navigation :deep(.nav-item:disabled:hover) { color: #777; background: transparent; }
 .order-links :deep(.nav-item:disabled), .order-links :deep(.nav-item:disabled:hover) { color: #bebebe; cursor: default; }
+.product-links {
+  margin: 2px 0 6px 18px !important;
+}
+
+.product-links :deep(.nav-item) {
+  min-height: 34px;
+  font-size: 14px;
+}
+
+.product-links :deep(.nav-item svg) {
+  display: none;
+}
+
+.product-entry {
+  margin-top: 4px !important;
+}
 </style>

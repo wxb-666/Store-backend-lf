@@ -60,7 +60,7 @@ type ProductTab = 'all' | 'on-sale' | 'removed'
 
 const tabs: { label: string; value: ProductTab }[] = [
   { label: 'All', value: 'all' },
-  { label: 'On sell', value: 'on-sale' },
+  { label: 'On sale', value: 'on-sale' },
   { label: 'Has been removed', value: 'removed' },
 ]
 
@@ -117,21 +117,15 @@ const query = ref('')
   white-space: nowrap;
 }
 
-.secondary-button {
-  color: #303030;
-  background: #fff;
-  border: 1px solid #dedede;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
-}
-
-.primary-button {
+.header-actions button {
   color: #fff;
-  background: #f58a32;
-  border: 1px solid #f58a32;
+  background: #000;
+  border: 1px solid #000;
 }
 
-.primary-button:hover {
-  background: #e97924;
+.header-actions button:hover {
+  background: #252525;
+  border-color: #252525;
 }
 
 .products-content {

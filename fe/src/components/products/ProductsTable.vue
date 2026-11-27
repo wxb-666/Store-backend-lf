@@ -489,14 +489,26 @@ function formatPrice(price: number) {
 }
 
 .pagination {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   min-height: 56px;
   padding: 8px 14px;
   color: #666;
   font-size: 13px;
   border-top: 1px solid #ededed;
+}
+
+.pagination > span {
+  grid-column: 1;
+  justify-self: start;
+}
+
+.page-controls {
+  grid-column: 2;
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
 .page-controls {

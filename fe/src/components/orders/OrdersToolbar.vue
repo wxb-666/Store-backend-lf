@@ -27,7 +27,7 @@
 
     <div class="search-field filter-field">
       <AppIcon name="search" :size="19" />
-      <input v-model="draftQuery" type="search" :placeholder="t('orders.searchPlaceholder')" aria-label="Order search" />
+      <input v-model="draftQuery" type="search" placeholder="Please enter order number, slug, etc." aria-label="Order search" />
       <button type="submit">Search</button>
     </div>
   </form>
@@ -36,7 +36,6 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch } from 'vue'
 import AppIcon from '../ui/AppIcon.vue'
-import { t } from '../../stores/locale'
 
 const query = defineModel<string>('query', { required: true })
 const paymentMethod = defineModel<string>('paymentMethod', { required: true })

@@ -5,12 +5,12 @@
         <header class="orders-header">
             <h1>
                 <AppIcon name="orders" :size="23" />
-                {{ t('orders.title') }}
+                Orders
             </h1>
 
             <div>
                 <button class="export-button" type="button">
-                {{ t('orders.export') }}
+                    Export
                 </button>
             </div>
         </header>
@@ -33,21 +33,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-import AppIcon from '../components/ui/AppIcon.vue';
-import OrdersTable from '../components/orders/OrdersTable.vue';
-import OrdersToolbar from '../components/orders/OrdersToolbar.vue';
-
-import { t } from '../stores/locale';
+import AppIcon from '../components/ui/AppIcon.vue'
+import OrdersTable from '../components/orders/OrdersTable.vue'
+import OrdersToolbar from '../components/orders/OrdersToolbar.vue'
 
 // 定义组件名称
-defineOptions({ name: 'OrdersView' });
+defineOptions({ name: 'OrdersView' })
 
 // 定义响应式数据
-const query = ref('');
-const paymentMethod = ref('');
-const domain = ref('');
+const query = ref('')
+const paymentMethod = ref('')
+const domain = ref('')
 </script>
 
 <style scoped>

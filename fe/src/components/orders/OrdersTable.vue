@@ -3,7 +3,7 @@
     <table class="orders-table" :aria-busy="loading">
       <thead>
         <tr>
-          <th class="select-column"><input v-model="allSelected" type="checkbox" :aria-label="t('orders.selectAll')" /></th>
+          <th class="select-column"><input v-model="allSelected" type="checkbox" aria-label="Select all orders" /></th>
           <th>Order number</th>
           <th :aria-sort="sortDirection === 'asc' ? 'ascending' : 'descending'">
             <button class="sort-heading" type="button" :aria-label="`Sort by payment time ${sortDirection === 'desc' ? 'ascending' : 'descending'}`" @click="toggleSort">
@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr v-for="order in orders" :key="order.order_id">
-          <td><input v-model="selectedOrderIds" :value="order.order_id" :aria-label="`${t('orders.select')} ${order.order_number}`" type="checkbox" /></td>
+          <td><input v-model="selectedOrderIds":value="order.order_id":aria-label="`Select ${order.order_number}`" type="checkbox" /></td>
           <td><button class="order-number" type="button" @click="openOrder(order)">{{ order.order_number }}</button></td>
           <td>{{ formatDate(order.payment_time) }}</td>
           <td><span class="status-value" :class="statusClass(order.payment_status)">{{ formatStatus(order.payment_status) }}</span></td>
@@ -59,7 +59,7 @@
     </table>
     <p v-if="loading" class="table-message" role="status">Loading orders…</p>
     <p v-else-if="errorMessage" class="table-message error-message" role="alert">{{ errorMessage }} <button type="button" @click="loadOrders">Retry</button></p>
-    <p v-else-if="orders.length === 0" class="table-message">{{ t('orders.empty') }}</p>
+    <p v-else-if="orders.length === 0" class="table-message">No orders found.</p>
     <footer v-if="!errorMessage" class="pagination">
       <span class="total-count">{{ total }} {{ total === 1 ? 'order' : 'orders' }}</span>
       <div class="page-controls">
@@ -109,7 +109,6 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { fetchOrders, type OrderListItem } from '../../api/orders'
-import { t } from '../../stores/locale'
 
 const props = defineProps<{ query: string; paymentMethod: string; domain: string }>()
 const router = useRouter()

@@ -1,13 +1,9 @@
 <template>
   <header class="dashboard-header">
-    <div class="selling-status"><span />{{ t('dashboard.selling') }}</div>
-    <a href="tel:8449821186">{{ t('dashboard.help') }} <strong>(844) 982-1186</strong></a>
+    <div class="selling-status"><span />Selling</div>
+    <a href="tel:8449821186">Need help? <strong>(844) 982-1186</strong></a>
   </header>
 </template>
-
-<script setup lang="ts">
-import { t } from '../../stores/locale'
-</script>
 
 <style scoped>
 .dashboard-header { display: flex; align-items: center; justify-content: space-between; min-height: 72px; padding: 18px 32px; }

@@ -172,14 +172,14 @@ function submitSearch() {
   padding: 0 16px;
   color: #fff;
   font-size: 14px;
-  background: #f58a32;
-  border: 0;
+  background: #000;
+  border: 1px solid #000;
   border-radius: 4px;
   cursor: pointer;
 }
 
 .search-control button:hover {
-  background: #e97924;
+  background: #252525;
 }
 
 @media (max-width: 1100px) {
